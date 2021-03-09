@@ -51,7 +51,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
   },
-  { initialRouteName: "Home" }
+  { initialRouteName: "Home", tintColor: '#440a67' }
 );
 
 //Export  navigator

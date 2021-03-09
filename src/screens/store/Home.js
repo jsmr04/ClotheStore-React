@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import fetchData from '../../backend/FetchData';
 
 //Screen Style
 const styles = StyleSheet.create({
@@ -7,14 +8,24 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    list:{
+        marginTop: 50,
+        alignSelf:'stretch'
     }
 })
 
 //Screen
 export default () => {
+    const { loading, data: products } = fetchData('product/')
+
     return (
         <View style = { styles.container }>
-            <Text>I'm Home</Text>
+            <FlatList style = { styles.list }
+                data = { products }
+                keyExtractor={(x) => x.id}
+                renderItem = {({ item }) => ( <Text>{ item.name }</Text> ) }
+            />
         </View>
     )
 }
