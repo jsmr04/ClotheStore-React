@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import React from "react";
+import { View, StyleSheet, FlatList, Image } from "react-native";
 import fetchData from "../../backend/FetchData";
 import { Card, Block } from "galio-framework";
 import theme from "../theme";
+import Util from "../../helpers/Util"
 
 //Screen Style
 const styles = StyleSheet.create({
@@ -33,8 +34,6 @@ const styles = StyleSheet.create({
 export default () => {
   let { loading, data: products } = fetchData("product/");
 
-  console.log(products);
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -44,16 +43,14 @@ export default () => {
         renderItem={({ item }) => {
           return (
             <Block space='between' >
-              {/* <Image style={{ width:'100%', height:200 }} source={{uri: item.pictures[0].url}}/>
-                                                    <Text>{ item.name }</Text>  */}
               <Card
                 style={styles.card}
                 flex
                 borderLess
                 shadowColor={theme.COLORS.BLACK}
                 title={item.name}
-                avatar="http://i.pravatar.cc/100?id=skater"
-                caption={String(item.price)}
+                avatar= { 'https://github.com/jsmr04/ClotheStore-React/blob/main/assets/logo-favicon.png?raw=true' }
+                caption={ 'C' + Util.formatter.format(item.price) }
                 location={"Toronto, ON"}
                 imageStyle={styles.cardImage}
                 image={item.pictures[0].url}

@@ -3,7 +3,7 @@ const COLORS = {
     BLACK: '#000000',
     GREY: '#898989',
     THEME: '#B23AFC',
-    PRIMARY: '#B23AFC',
+    PRIMARY: '#631686',
     INFO: '#1232FF',
     ERROR: '#FE2472',
     WARNING: '#FF9C09',

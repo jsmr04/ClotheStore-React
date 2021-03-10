@@ -11,6 +11,14 @@ import SearchScreen from "../screens/store/Search";
 import OrdersScreen from "../screens/store/Orders";
 import AccountScreen from "../screens/store/Account";
 
+//Theme
+import theme from '../screens/theme'
+
+//TabOptions
+const tabBarOptions = {
+  activeTintColor: theme.COLORS.PRIMARY,
+ }
+
 //Navigation settings
 const appNavigator = createBottomTabNavigator(
   {
@@ -18,6 +26,7 @@ const appNavigator = createBottomTabNavigator(
       screen: HomeScreen,
       navigationOptions:{
         tabBarLabel: 'Home',
+        tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'home' } size = { 25 } color = { tintColor } />
         )
@@ -27,6 +36,7 @@ const appNavigator = createBottomTabNavigator(
       screen: SearchScreen,
       navigationOptions:{
         tabBarLabel: 'Search',
+        tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'search' } size = { 25 } color = { tintColor } />
         )
@@ -36,6 +46,7 @@ const appNavigator = createBottomTabNavigator(
       screen: OrdersScreen,
       navigationOptions:{
         tabBarLabel: 'Orders',
+        tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'albums' } size = { 25 } color = { tintColor } />
         )
@@ -45,13 +56,14 @@ const appNavigator = createBottomTabNavigator(
       screen: AccountScreen,
       navigationOptions:{
         tabBarLabel: 'Account',
+        tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'person' } size = { 25 } color = { tintColor } />
         )
       }
     },
   },
-  { initialRouteName: "Home", tintColor: '#440a67' }
+  { initialRouteName: 'Home' }
 );
 
 //Export  navigator
