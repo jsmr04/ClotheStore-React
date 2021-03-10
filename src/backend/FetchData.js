@@ -1,31 +1,37 @@
-import { useState, useEffect } from 'react';
-import FirebaseConfig from './FirebaseConfig';
+import { useState, useEffect } from "react";
+import FirebaseConfig from "./FirebaseConfig";
 
 export default (path) => {
-    let [data, setData] = useState([])
-    let [loading, setLoading] = useState(true)
-    
-    useEffect(()=>{
-        let tmpData = []
+  let [data, setData] = useState([]);
+  let [loading, setLoading] = useState(true);
 
-        //Init Firebase
-        const firebase = FirebaseConfig();
-        const productRef = firebase.database().ref(path)
+  useEffect(() => {
+    getDataFromFirebase();
+  }, []);
 
-        //Get data from Firebase
-        productRef.once("value", function (snapshot) {    
-            snapshot.forEach(function (childSnapshot) {
-                tmpData.push( childSnapshot.val() )
-            })
+  const getDataFromFirebase = () => {
+    let tmpData = [];
+    //Init Firebase
+    const firebase = FirebaseConfig();
+    //Database
+    const productRef = firebase.database().ref(path);
+    //Storage
+    const storageRef = firebase.storage().ref('pictures'); 
 
-            //Update states
-            setLoading(false)
-            setData(tmpData)  
-            
-            console.log('*** DATA ***')
-            console.log(tmpData)
-        })
-    },[])
+    //Get data from Firebase
+    productRef.once("value", function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
 
-    return { loading, data }
-}
+        tmpData.push(childSnapshot.val());
+    });
+
+      //Update states
+      setLoading(false);
+      setData(tmpData);
+    });
+  };
+
+//   console.log('DATA')
+//   console.log(data)
+  return { loading, data };
+};
