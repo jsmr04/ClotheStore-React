@@ -17,7 +17,7 @@ import theme from '../screens/theme'
 //TabOptions
 const tabBarOptions = {
   activeTintColor: theme.COLORS.PRIMARY,
- }
+}
 
 //Navigation settings
 const appNavigator = createBottomTabNavigator(
@@ -28,7 +28,7 @@ const appNavigator = createBottomTabNavigator(
         tabBarLabel: 'Home',
         tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
-          <Ionicons name = { 'home' } size = { 25 } color = { tintColor } />
+          <Ionicons name = { 'home-outline' } size = { 25 } color = { tintColor } />
         )
       }
     },
@@ -42,23 +42,23 @@ const appNavigator = createBottomTabNavigator(
         )
       }
     },
-    Orders: {
+    Favorites: {
       screen: OrdersScreen,
       navigationOptions:{
-        tabBarLabel: 'Orders',
+        tabBarLabel: 'Favorites',
         tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
-          <Ionicons name = { 'albums' } size = { 25 } color = { tintColor } />
+          <Ionicons name = { 'heart-outline' } size = { 25 } color = { tintColor } />
         )
       }
     },
-    Account: {
+    Cart: {
       screen: AccountScreen,
       navigationOptions:{
-        tabBarLabel: 'Account',
+        tabBarLabel: 'Cart',
         tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
-          <Ionicons name = { 'person' } size = { 25 } color = { tintColor } />
+          <Ionicons name = { 'cart-outline' } size = { 25 } color = { tintColor } />
         )
       }
     },
