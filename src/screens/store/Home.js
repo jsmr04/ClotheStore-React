@@ -1,23 +1,21 @@
 import React from "react";
 import { ActivityIndicator, View, StyleSheet, FlatList, Image } from "react-native";
+// import { SafeAreaView, View, StyleSheet, FlatList, Image, Text, StatusBar } from "react-native";
 import fetchData from "../../backend/FetchData";
 import { Card, Block } from "galio-framework";
 import theme from "../theme";
 import Util from "../../helpers/Util"
+import TopBar from "../../components/TopBar"
 
 //Screen Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
   },
   list: {
-    marginTop: 50,
+    marginTop: 5,
     alignSelf: "stretch",
-  },
-  cardConatiner: {
-    
   },
   card: {
     marginHorizontal: 10,
@@ -36,7 +34,7 @@ export default () => {
 
   return (
     <View style={styles.container}>
-
+      <TopBar></TopBar>
       { loading ? 
         <ActivityIndicator size='large' color = { theme.COLORS.PRIMARY } /> 
       : 
@@ -53,9 +51,7 @@ export default () => {
                 borderLess
                 shadowColor={theme.COLORS.BLACK}
                 title={item.name}
-                avatar= { 'https://github.com/jsmr04/ClotheStore-React/blob/main/assets/logo-favicon.png?raw=true' }
                 caption={ 'C' + Util.formatter.format(item.price) }
-                location={"Toronto, ON"}
                 imageStyle={styles.cardImage}
                 image={item.pictures[0].url}
               />

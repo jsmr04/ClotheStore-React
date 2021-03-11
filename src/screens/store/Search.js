@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SearchBar } from 'react-native-elements'
+import TopBar from "../../components/TopBar"
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
         justifyContent: 'flex-start',
         alignItems: 'stretch',
-        paddingTop:45,
     },
     searchContainer:{
         backgroundColor: 'transparent', 
@@ -20,6 +20,7 @@ export default () => {
     const [searchText, setSearchText] = useState('')
     return (
         <View style = { styles.container }>
+            <TopBar/>
             <SearchBar style = {{ borderWidth: 0.1 }}
                 containerStyle = { styles.searchContainer }
                 inputContainerStyle = {{ backgroundColor: 'transparent' }}
@@ -30,6 +31,7 @@ export default () => {
                 searchIcon = {{ size:24 }}
                 cancelIcon = {{ size:24 }}
             />
+            <Text>I'm Search</Text>
         </View>
     )
 }
