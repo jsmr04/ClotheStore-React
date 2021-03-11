@@ -11,7 +11,9 @@ const styles = StyleSheet.create({
     },
     searchContainer:{
         backgroundColor: 'transparent', 
-        borderWidth: 0.2,
+        borderTopColor: 'transparent', 
+        borderBottomColor: 'transparent',
+        
     }
 
 })
@@ -21,7 +23,7 @@ export default () => {
     return (
         <View style = { styles.container }>
             <TopBar/>
-            <SearchBar style = {{ borderWidth: 0.1 }}
+            <SearchBar style = {{ }}
                 containerStyle = { styles.searchContainer }
                 inputContainerStyle = {{ backgroundColor: 'transparent' }}
                 placeholder = { 'Find products...' }

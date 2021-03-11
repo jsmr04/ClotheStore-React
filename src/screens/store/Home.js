@@ -1,6 +1,5 @@
 import React from "react";
 import { ActivityIndicator, View, StyleSheet, FlatList, Image } from "react-native";
-// import { SafeAreaView, View, StyleSheet, FlatList, Image, Text, StatusBar } from "react-native";
 import fetchData from "../../backend/FetchData";
 import { Card, Block } from "galio-framework";
 import theme from "../theme";
@@ -11,7 +10,7 @@ import TopBar from "../../components/TopBar"
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   list: {
     marginTop: 5,
@@ -34,7 +33,7 @@ export default () => {
 
   return (
     <View style={styles.container}>
-      <TopBar></TopBar>
+      <TopBar/>
       { loading ? 
         <ActivityIndicator size='large' color = { theme.COLORS.PRIMARY } /> 
       : 
