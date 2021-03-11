@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, FlatList, Image } from "react-native";
+import { ActivityIndicator, View, StyleSheet, FlatList, Image } from "react-native";
 import fetchData from "../../backend/FetchData";
 import { Card, Block } from "galio-framework";
 import theme from "../theme";
@@ -36,6 +36,10 @@ export default () => {
 
   return (
     <View style={styles.container}>
+
+      { loading ? 
+        <ActivityIndicator size='large' color = { theme.COLORS.PRIMARY } /> 
+      : 
       <FlatList
         style={styles.list}
         data={products}
@@ -59,6 +63,7 @@ export default () => {
           );
         }}
       />
+    }
     </View>
   );
 };
