@@ -1,6 +1,5 @@
 import React from "react";
 import { ActivityIndicator, View, StyleSheet, FlatList, Dimensions } from "react-native";
-// import { SafeAreaView, View, StyleSheet, FlatList, Image, Text, StatusBar } from "react-native";
 import fetchData from "../../backend/FetchData";
 import Card from "../../components/Card";
 import Block from "../../components/Block";
