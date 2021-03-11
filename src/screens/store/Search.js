@@ -34,6 +34,10 @@ export default () => {
                 cancelIcon = {{ size:24 }}
             />
             <Text>I'm Search</Text>
+            <View>
+            
+            </View>
         </View>
+        
     )
 }

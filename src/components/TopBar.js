@@ -9,11 +9,11 @@ const styles = StyleSheet.create({
       padding: 10,
       borderBottomWidth: 1,
       backgroundColor: theme.COLORS.PRIMARY,
-      alignContent: "space-between"
+      width:'100%'
     }
 });
 
-export default () =>{
+export default () => {
     return (
     <View>
         <SafeAreaView style={{backgroundColor: theme.COLORS.PRIMARY}}></SafeAreaView>
@@ -22,7 +22,7 @@ export default () =>{
             <View style={{alignItems:"flex-start"}}>
                 <Text style={{fontSize: 21, color: "#fff",}}>Clothe<Text style={{fontWeight: "700"}}>Store</Text></Text>
             </View>
-            <View style={{alignItems:"flex-end", marginTop:-27}}>
+            <View style={{alignItems:"flex-end", marginTop:-27}} onTouchStart={{}}>
                 <Ionicons name = { 'person' } size = { 25 } color={theme.COLORS.WHITE}/>  
             </View>   
         </View>
