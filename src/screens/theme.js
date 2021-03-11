@@ -19,6 +19,7 @@ const COLORS = {
     TWITTER: '#5BC0DE',
     DRIBBBLE: '#EA4C89',
     ICON: '#000000',
+    TITLE: '#979ca8'
   };
   
   const SIZES = {
