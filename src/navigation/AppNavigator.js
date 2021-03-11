@@ -8,8 +8,8 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 //Screens
 import HomeScreen from "../screens/store/Home";
 import SearchScreen from "../screens/store/Search";
-import OrdersScreen from "../screens/store/Orders";
-import AccountScreen from "../screens/store/Account";
+import FavoriteScreen from "../screens/store/Favorite";
+import CartScreen from "../screens/store/Cart";
 
 //Theme
 import theme from '../screens/theme'
@@ -43,7 +43,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
     Favorites: {
-      screen: OrdersScreen,
+      screen: FavoriteScreen,
       navigationOptions:{
         tabBarLabel: 'Favorites',
         tabBarOptions: tabBarOptions, 
@@ -53,7 +53,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
     Cart: {
-      screen: AccountScreen,
+      screen: CartScreen,
       navigationOptions:{
         tabBarLabel: 'Cart',
         tabBarOptions: tabBarOptions, 

@@ -12,7 +12,7 @@ export default () => {
     return (
         <View style = { styles.container }>
             <TopBar></TopBar>
-            <Text>I'm Cart</Text>
+            <Text>I'm Favorite</Text>
             <View>
             
             </View>
