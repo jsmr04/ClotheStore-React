@@ -1,8 +1,9 @@
 import React from "react";
-import { ActivityIndicator, View, StyleSheet, FlatList, Image } from "react-native";
+import { ActivityIndicator, View, StyleSheet, FlatList, Dimensions } from "react-native";
 // import { SafeAreaView, View, StyleSheet, FlatList, Image, Text, StatusBar } from "react-native";
 import fetchData from "../../backend/FetchData";
-import { Card, Block } from "galio-framework";
+import Card from "../../components/Card";
+import Block from "../../components/Block";
 import theme from "../theme";
 import Util from "../../helpers/Util"
 import TopBar from "../../components/TopBar"
@@ -11,6 +12,7 @@ import TopBar from "../../components/TopBar"
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignContent:'center',
   },
   list: {
     marginTop: 5,
@@ -24,7 +26,13 @@ const styles = StyleSheet.create({
   cardImage: {
     borderTopLeftRadius: 7,
     borderTopRightRadius: 7,
+    
   },
+  activity: {
+    position:'absolute', 
+    top: Dimensions.get('window').height / 2 , 
+    right: Dimensions.get('window').width / 2 - 20
+  }
 });
 
 //Screen
@@ -35,7 +43,7 @@ export default () => {
     <View style={styles.container}>
       <TopBar></TopBar>
       { loading ? 
-        <ActivityIndicator size='large' color = { theme.COLORS.PRIMARY } /> 
+        <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
       : 
       <FlatList
         style={styles.list}
@@ -50,7 +58,8 @@ export default () => {
                 borderLess
                 shadowColor={theme.COLORS.BLACK}
                 title={item.name}
-                caption={ 'C' + Util.formatter.format(item.price) }
+                favoriteIcon="heart-outline"
+                location={'C' + Util.formatter.format(item.price)}
                 imageStyle={styles.cardImage}
                 image={item.pictures[0].url}
               />
