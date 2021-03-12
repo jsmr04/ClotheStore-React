@@ -1,6 +1,5 @@
 import React from "react";
 import { ActivityIndicator, View, StyleSheet, FlatList, Dimensions, StatusBar, TouchableOpacity } from "react-native";
-// import { SafeAreaView, View, StyleSheet, FlatList, Image, Text, StatusBar } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from "../../backend/FetchData";
 import Card from "../../components/Card";
