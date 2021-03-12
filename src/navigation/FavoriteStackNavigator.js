@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import FavoriteScreen from '../screens/store/Favorite'
-import SignScreen from '../screens/authentication/Signin'
+import FavoriteScreen from '../screens/store/Favorite';
+import SignScreen from '../screens/authentication/Signin';
+import ItemDetailScreen from '../screens/store/ItemDetails'; 
 import theme from '../screens/theme';
 
 const Stack = createStackNavigator();
@@ -30,6 +31,11 @@ function App() {
         options={{
             title: 'Sign In',
         }}
+        />
+        <Stack.Screen 
+        name="item" 
+        component={ItemDetailScreen} 
+        options={theme.horizontalAnimation}
         />
       </Stack.Navigator>
     </NavigationContainer>

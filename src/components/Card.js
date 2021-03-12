@@ -1,5 +1,5 @@
 /* eslint-disable object-curly-newline */
-import React from 'react';
+import React, {useState} from 'react';
 import { Image, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Ionicons } from '@expo/vector-icons'
@@ -9,6 +9,7 @@ import Text from '../../node_modules/galio-framework/src/atomic/ions/Text';
 import GalioTheme, { withGalio } from '../../node_modules/galio-framework/src/theme';
 import Theme from "../screens/theme"
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Storage from "../backend/LocalStorage";
 
 function Card({
   avatar,
@@ -19,7 +20,6 @@ function Card({
   children,
   footerStyle,
   image,
-  favoriteIcon,
   imageBlockStyle,
   imageStyle,
   location, 
@@ -31,6 +31,8 @@ function Card({
   titleColor,
   theme,
   onPress,
+  itemId,
+  activeIcon,
   ...props 
 }) {
   function renderImage() {
@@ -38,7 +40,6 @@ function Card({
     return (
       <Block card style={[styles.imageBlock, imageBlockStyle]}>
         <Image source={{ uri: image }} style={[styles.image, imageStyle]} />
-        <Ionicons name = { favoriteIcon } size = { 30 } style={{position:"absolute", right: 5, top:5}} color= {Theme.COLORS.PRIMARY}/>
       </Block>
     );
   }
@@ -90,16 +91,39 @@ function Card({
     );
   }
 
-
   const styleCard = [borderless && { borderWidth: 0 }, style];
+  const [favoriteIconName, setFavorite] = useState(activeIcon);
+  const [active, setActive] = useState(false);
 
   return (
     <Block {...props} card={card} shadow={shadow} style={styleCard}>
+      
       <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
         {renderImage()}
         {renderAuthor()}
         {children}
       </TouchableOpacity>
+      <Ionicons name = { favoriteIconName } size = { 30 } style={{position:"absolute", right: 5, top:5}} color= {Theme.COLORS.PRIMARY} 
+      onPress={() => {
+        if(active){
+          setFavorite("heart-outline")
+          setActive(false)
+          Storage.remove({
+            key: 'favorite',
+            id: itemId
+          });
+        }else {
+          setFavorite("heart")
+          setActive(true)
+          Storage.save({
+            key: 'favorite',
+            id: itemId,
+            data: {
+              item: itemId
+            },
+          });
+        }
+        }}/>
     </Block>
   );
 }
@@ -111,6 +135,7 @@ Card.defaultProps = {
   styles: {},
   theme: GalioTheme,
   title: '',
+  itemId: '',
   titleColor: '',
   caption: '',
   captionColor: '',
@@ -125,7 +150,8 @@ Card.propTypes = {
   styles: PropTypes.any,
   theme: PropTypes.any,
   title: PropTypes.string,
-  favoriteIcon: PropTypes.string,
+  itemId: PropTypes.string,
+  activeIcon: PropTypes.string,
   titleColor: PropTypes.string,
   caption: PropTypes.string,
   captionColor: PropTypes.string,

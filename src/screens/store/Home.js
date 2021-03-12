@@ -1,11 +1,12 @@
 import React from "react";
-import { ActivityIndicator, View, StyleSheet, FlatList, Dimensions, StatusBar, TouchableOpacity } from "react-native";
+import { ActivityIndicator, RefreshControl, View, StyleSheet, FlatList, Dimensions, StatusBar, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from "../../backend/FetchData";
 import Card from "../../components/Card";
 import Block from "../../components/Block";
 import theme from "../theme";
 import Util from "../../helpers/Util"
+import Storage from "../../backend/LocalStorage";
 
 //Screen Style
 const styles = StyleSheet.create({
@@ -34,10 +35,39 @@ const styles = StyleSheet.create({
   }
 });
 
+let arrayFavorites = []
+
+function loadFavorites() {
+  Storage.getIdsForKey('favorite')
+  .then(favorites => {
+    arrayFavorites = favorites
+  })
+}
+
+function checkfavorites(itemId){
+  var icon = "heart-outline"
+  arrayFavorites.forEach(i =>{
+    if(i == itemId){
+      icon = "heart"
+    } 
+  })
+  return icon;
+}
+
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 //Screen
 export default ({navigation}) => {
   let { loading, data: products } = fetchData("product/");
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
+  loadFavorites();
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: 'ClotheStore',
@@ -56,6 +86,12 @@ export default ({navigation}) => {
         <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
       : 
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
         style={styles.list}
         data={products}
         keyExtractor={(x) => x.id}
@@ -68,7 +104,8 @@ export default ({navigation}) => {
                 borderLess
                 shadowColor={theme.COLORS.BLACK}
                 title={item.name}
-                favoriteIcon="heart-outline"
+                itemId={item.id}
+                activeIcon={checkfavorites(item.id)}
                 location={'C' + Util.formatter.format(item.price)}
                 imageStyle={styles.cardImage}
                 image={item.pictures[0].url}

@@ -34,7 +34,6 @@ export default ({ options, titleColor, highlightColor, activeColor = titleColor 
         else {
             color = activeColor;
         }
-
         return disable;
     }
 

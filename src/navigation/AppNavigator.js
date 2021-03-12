@@ -50,7 +50,12 @@ const appNavigator = createBottomTabNavigator(
       screen: FavoriteStackScreen,
       navigationOptions:{
         tabBarLabel: 'Favorites',
-        tabBarOptions: tabBarOptions, 
+        tabBarOptions: {
+          activeTintColor: theme.COLORS.PRIMARY,
+          tabBarOnPress: (scene, jumpToIndex) => {
+            jumpToIndex(scene.index);
+          },
+        }, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'heart-outline' } size = { 25 } color = { tintColor } />
         )
