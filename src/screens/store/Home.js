@@ -72,6 +72,7 @@ export default ({navigation}) => {
                 location={'C' + Util.formatter.format(item.price)}
                 imageStyle={styles.cardImage}
                 image={item.pictures[0].url}
+                onPress={() => navigation.navigate('item')}
               />
             </Block>
           );

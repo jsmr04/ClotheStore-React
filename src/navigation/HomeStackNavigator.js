@@ -1,11 +1,10 @@
 import * as React from 'react';
-import {Button, TouchableOpacity} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/store/Home'
-import SignScreen from '../screens/authentication/Signin'
+import HomeScreen from '../screens/store/Home';
+import SignScreen from '../screens/authentication/Signin';
+import ItemDetailScreen from '../screens/store/ItemDetails'; 
 import theme from '../screens/theme';
-import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 
@@ -18,10 +17,28 @@ const MyTheme = {
     },
 };
 
+const horizontalAnimation = {
+  cardStyleInterpolator: ({ current, layouts }) => {
+    return {
+      cardStyle: {
+        transform: [
+          {
+            translateX: current.progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [layouts.screen.width, 0],
+            }),
+          },
+        ],
+      },
+    };
+  },
+};
+
 function App() {
-  return (
+
+  return ( 
     <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator initialRouteName="home">
+      <Stack.Navigator initialRouteName="home" mode="modal">
         <Stack.Screen 
         name="home" 
         component={HomeScreen} 
@@ -32,6 +49,11 @@ function App() {
         options={{
             title: 'Sign In',
         }}
+        />
+        <Stack.Screen 
+        name="item" 
+        component={ItemDetailScreen} 
+        options={horizontalAnimation}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -6,7 +6,7 @@ const COLORS = {
     PRIMARY: '#631686',
     INFO: '#1232FF',
     ERROR: '#FE2472',
-    WARNING: '#FF9C09',
+    WARNING: '#ec6b33',
     SUCCESS: '#45DF31',
     TRANSPARENT: 'transparent',
     INPUT: '#808080',

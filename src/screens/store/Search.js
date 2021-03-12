@@ -1,11 +1,11 @@
-import theme from "../theme";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { View, StyleSheet, Text, Image, Platform, Dime, Dimensions } from "react-native";
+import { View, StyleSheet, Text, Platform, Dimensions, TouchableOpacity, StatusBar } from "react-native";
 import { SearchBar } from "react-native-elements";
-import TopBar from "../../components/TopBar";
 import TabOptions from "../../components/TabOptions";
 import fetchData from "../../backend/FetchData";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
+import { Ionicons } from '@expo/vector-icons';
+import theme from "../theme";
 
 const styles = StyleSheet.create({
   container: {
@@ -59,12 +59,24 @@ const styles = StyleSheet.create({
   },
 });
 
-export default () => {
+export default ({navigation}) => {
   const [searchText, setSearchText] = useState("");
   const [categoryIndex, setCategoryIndex] = useState(0);
   const ref = useRef(null);
   //Getting categories
   let { loading, data: categories } = fetchData("category/");
+
+  //SettingUp the top Header style
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'ClotheStore',
+      headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate('signin')}>
+              <Ionicons name = { 'person' } size = { 25 } color={theme.COLORS.WHITE} style={{marginRight: 10}}/>  
+          </TouchableOpacity>
+      ),
+    })
+  }, [navigation]);
 
   //Options configuration
   const [tabOptions, setTabOptions] = useState([
@@ -89,17 +101,6 @@ export default () => {
     setTabOptions(newTabOptions);
   };
 
-  //Assign function
-  useEffect(() => {
-    let newTabOptions = [];
-    tabOptions.forEach((x) => {
-      //onPress function
-      x.onPress = checkOption;
-      newTabOptions.push(x);
-    });
-
-    setTabOptions(newTabOptions);
-  }, []);
 
   //Render carousel
   const renderItem = useCallback(
@@ -124,7 +125,7 @@ export default () => {
 
   return (
     <View style={styles.container}>
-      <TopBar />
+      <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
       <SearchBar
         containerStyle={styles.searchContainer}
         inputContainerStyle={{ backgroundColor: "transparent" }}
