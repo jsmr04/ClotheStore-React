@@ -17,6 +17,10 @@ import theme from '../screens/theme'
 //TabOptions
 const tabBarOptions = {
   activeTintColor: theme.COLORS.PRIMARY,
+  style: {
+    padding: 10,
+    height: 50,
+  },
 }
 
 //Navigation settings

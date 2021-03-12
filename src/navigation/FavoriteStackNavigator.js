@@ -19,7 +19,7 @@ const MyTheme = {
 function App() {
   return (
     <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator initialRouteName="home">
+      <Stack.Navigator initialRouteName="home" mode="modal">
         <Stack.Screen 
         name="home" 
         component={FavoriteScreen} 

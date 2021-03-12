@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { View, StyleSheet, Text, Platform, Dimensions, TouchableOpacity, StatusBar } from "react-native";
+import { SafeAreaView, View, StyleSheet, Text, Platform, Dimensions, TouchableOpacity, StatusBar } from "react-native";
 import { SearchBar } from "react-native-elements";
 import TabOptions from "../../components/TabOptions";
 import fetchData from "../../backend/FetchData";
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
     borderRadius: 5,
-    height: Dimensions.get('window').height - 350,
+    height: Dimensions.get('window').height - 300 ,
     marginVertical: 15,
     marginHorizontal: 10,
     borderRadius: 10,
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === "android" ? "Roboto" : "Helvetica",
   },
   categoryImage: {
-    height: Dimensions.get('window').height - 400,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
@@ -80,9 +79,9 @@ export default ({navigation}) => {
 
   //Options configuration
   const [tabOptions, setTabOptions] = useState([
-    { key: 0, name: "Women", checked: true, onPress: () => {} },
-    { key: 1, name: "Men", checked: false, onPress: () => {} },
-    { key: 2, name: "Kids", checked: false, onPress: () => {} },
+    { key: 0, name: "Women", checked: true, onPress: () => {}},
+    { key: 1, name: "Men", checked: false, onPress: () => {}},
+    { key: 2, name: "Kids", checked: false, onPress: () => {}},
   ]);
 
   //Check option onPreess event
@@ -101,6 +100,17 @@ export default ({navigation}) => {
     setTabOptions(newTabOptions);
   };
 
+  //Assign function
+  useEffect(() => {
+    let newTabOptions = [];
+    tabOptions.forEach((x) => {
+    //onPress function
+    x.onPress = checkOption;
+    newTabOptions.push(x);
+    });
+
+    setTabOptions(newTabOptions);
+}, []);
 
   //Render carousel
   const renderItem = useCallback(
@@ -124,7 +134,7 @@ export default ({navigation}) => {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
       <SearchBar
         containerStyle={styles.searchContainer}
@@ -141,18 +151,18 @@ export default ({navigation}) => {
         highlightColor={theme.COLORS.PRIMARY}
         titleColor={theme.COLORS.TITLE}
       />
-      <View style={{ alignSelf: "center", height: 570 }}>
+      <View style={{ alignSelf: "center" }}>
         <Carousel
           layout={"default"}
           ref={ref}
           data={categories}
           sliderWidth={400}
-          itemWidth={300}
+          itemWidth={320}
           renderItem={renderItem}
           hasParallaxImages={true}
           onSnapToItem={(index) => setCategoryIndex(index)}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };

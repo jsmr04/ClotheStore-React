@@ -6,8 +6,6 @@ import Carousel from "react-native-snap-carousel";
 import TabOptions from "../../components/TabOptions";
 import theme from "../theme";
 
-
-
 //Screen Style
 const styles = StyleSheet.create({
   container: {
@@ -70,7 +68,8 @@ const styles = StyleSheet.create({
   },
   viewDescriptionTitle: {
     flex:1,
-    margin:10,
+    marginTop: 20,
+    marginHorizontal:10,
     borderBottomColor: theme.COLORS.BLACK,
     borderBottomWidth:2 
   },
@@ -81,31 +80,41 @@ const styles = StyleSheet.create({
   }
 });
 
-const data = [
-    {
-      imgUrl: "https://firebasestorage.googleapis.com/v0/b/clothestore-484a8.appspot.com/o/pictures%2F1614791770640.jpg?alt=media&token=26a91927-8ee9-46ad-8e54-c3d3c9643f33"
-    },
-    {
-      imgUrl: "https://firebasestorage.googleapis.com/v0/b/clothestore-484a8.appspot.com/o/pictures%2F1614803140221.jpg?alt=media&token=60f3663b-4f6c-4ccb-8f2e-6faf8af21057"
-    },
-    {
-      imgUrl: "https://firebasestorage.googleapis.com/v0/b/clothestore-484a8.appspot.com/o/pictures%2F1614791377365.png?alt=media&token=e036eec0-d2e8-4f98-bd15-28a6ecf3a162"
-    }
-  ]
 
 //Screen
-export default ({navigation}) => {
+export default ({route, navigation}) => {
     const ref = useRef(null);
+    const { item } = route.params;
 
-     //Options configuration
-    const [tabOptions, setTabOptions] = useState([
-        { key: 0, name: "XS", checked: true, onPress: () => {} },
-        { key: 1, name: "S", checked: false, onPress: () => {} },
-        { key: 2, name: "M", checked: false, onPress: () => {} },
-        { key: 3, name: "L", checked: false, onPress: () => {} },
-        { key: 4, name: "XL", checked: false, onPress: () => {} },
-        { key: 5, name: "2XL", checked: false, onPress: () => {} },
-    ]);
+    const sizes = () => {
+      let itemSizes = [
+        { key: 0, name: "XS", checked: false, onPress: () => {}, disable: true},
+        { key: 1, name: "S", checked: false, onPress: () => {}, disable: true },
+        { key: 2, name: "M", checked: false, onPress: () => {}, disable: true },
+        { key: 3, name: "L", checked: false, onPress: () => {}, disable: true },
+        { key: 4, name: "XL", checked: false, onPress: () => {}, disable: true },
+        { key: 5, name: "2XL", checked: false, onPress: () => {}, disable: true },
+      ];
+
+      itemSizes.forEach(iSizes => {
+          item.size.forEach(si => {
+              if(si == iSizes.name){
+                iSizes.disable = false
+              }
+          });
+      });
+      return itemSizes;
+    }
+
+    // { key: 0, name: "XS", checked: false, onPress: () => {}, disable: false},
+    //   { key: 1, name: "S", checked: false, onPress: () => {}, disable: false },
+    //   { key: 2, name: "M", checked: false, onPress: () => {}, disable: false },
+    //   { key: 3, name: "L", checked: false, onPress: () => {}, disable: false },
+    //   { key: 4, name: "XL", checked: false, onPress: () => {}, disable: false },
+    //   { key: 5, name: "2XL", checked: false, onPress: () => {}, disable: false },
+
+    //Options configuration
+    const [tabOptions, setTabOptions] = useState(sizes);
 
     //Check option onPreess event
     const checkOption = (key) => {
@@ -138,7 +147,7 @@ export default ({navigation}) => {
         ({ item, index }) => (
             <View style={styles.container} key={index}>
                 <Image
-                source={{ uri: item.imgUrl }}
+                source={{ uri: item.url }}
                 style={styles.image}
                 />
             </View>
@@ -165,7 +174,7 @@ export default ({navigation}) => {
                 <Carousel
                 layout={"tinder"}
                 ref={ref}
-                data={data}
+                data={item.pictures}
                 sliderWidth={500}
                 itemWidth={500}
                 renderItem={renderItem}
@@ -173,13 +182,14 @@ export default ({navigation}) => {
                 />
             </View>
             <View style={styles.viewTitle}>
-                <Text style={styles.title}>NO SWEAT JOGGER - TOBACCO High Waist Joggers</Text>
+                <Text style={styles.title}>{item.name}</Text>
             </View>
             <View style={styles.viewBody}>
                 <TabOptions
                 options={tabOptions}
                 highlightColor={theme.COLORS.PRIMARY}
                 titleColor={theme.COLORS.TITLE}
+                activeColor={theme.COLORS.BLACK}
                 />
             </View>
             <View style={[styles.viewButtons, {marginTop: 20,}]}>
@@ -202,7 +212,7 @@ export default ({navigation}) => {
                 <Text style={{fontSize: 20}}>Description</Text> 
             </View>
             <View style={styles.viewDescriptionBody}> 
-                <Text style={{fontSize: 17}}>Sweatpant joggers in a soft cotton and recycled polyester blend. High waist, elasticized waistband with concealed drawstring inside, and side pockets. Double, stitched creases on legs and covered elastic at hems. Soft, brushed inside.</Text>
+                <Text style={{fontSize: 17}}>{item.description}</Text>
             </View>
         </ScrollView>
       
