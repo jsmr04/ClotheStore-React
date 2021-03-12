@@ -1,6 +1,13 @@
 import theme from "../theme";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { View, StyleSheet, Text, Image, Platform, Dime, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Platform,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { SearchBar } from "react-native-elements";
 import TopBar from "../../components/TopBar";
 import TabOptions from "../../components/TabOptions";
@@ -21,7 +28,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
     borderRadius: 5,
-    height: Dimensions.get('window').height - 350,
+    height: Dimensions.get("window").height - 350,
     marginVertical: 15,
     marginHorizontal: 10,
     borderRadius: 10,
@@ -46,7 +53,7 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === "android" ? "Roboto" : "Helvetica",
   },
   categoryImage: {
-    height: Dimensions.get('window').height - 400,
+    height: Dimensions.get("window").height - 400,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
@@ -54,14 +61,14 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 1,
     marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
   },
 });
 
-export default () => {
+export default ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
-  const [categoryIndex, setCategoryIndex] = useState(0);
+  const [classificationIndex, setClassificationIndex] = useState(0);
   const ref = useRef(null);
   //Getting categories
   let { loading, data: categories } = fetchData("category/");
@@ -86,6 +93,7 @@ export default () => {
       newTabOptions.push(x);
     });
 
+    setClassificationIndex(key);
     setTabOptions(newTabOptions);
   };
 
@@ -98,26 +106,39 @@ export default () => {
       newTabOptions.push(x);
     });
 
+  
     setTabOptions(newTabOptions);
   }, []);
+
+  //Search products events
+  const searchByCategory = (categoryName)=> {
+    //Go to home and search by classification and category
+    navigation.navigate('Home', {
+        productClassification: tabOptions[classificationIndex].name.toLowerCase(),
+        productCategory: categoryName
+    })
+
+  }
 
   //Render carousel
   const renderItem = useCallback(
     ({ item, index }, parallaxProps) => (
-      <View style={styles.card}>
-        <ParallaxImage
-          source={{ uri: item.url }}
-          containerStyle={styles.imageContainer}
-          style={styles.categoryImage}
-          parallaxFactor={0.4}
-          {...parallaxProps}
-        />
-        <View style={{ alignSelf: "stretch", height: 49 }}>
-          <Text style={styles.categoryText}>
-            {item.categoryName.toUpperCase()}
-          </Text>
+      <TouchableWithoutFeedback onPress={() => searchByCategory(item.categoryName)}>
+        <View style={styles.card}>
+          <ParallaxImage
+            source={{ uri: item.url }}
+            containerStyle={styles.imageContainer}
+            style={styles.categoryImage}
+            parallaxFactor={0.4}
+            {...parallaxProps}
+          />
+          <View style={{ alignSelf: "stretch", height: 49 }}>
+            <Text style={styles.categoryText}>
+              {item.categoryName.toUpperCase()}
+            </Text>
+          </View>
         </View>
-      </View>
+     </TouchableWithoutFeedback>
     ),
     []
   );
@@ -149,7 +170,6 @@ export default () => {
           itemWidth={300}
           renderItem={renderItem}
           hasParallaxImages={true}
-          onSnapToItem={(index) => setCategoryIndex(index)}
         />
       </View>
     </View>
