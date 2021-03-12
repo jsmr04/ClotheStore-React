@@ -1,10 +1,20 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { SafeAreaView, View, StyleSheet, Text, Platform, Dimensions, TouchableOpacity, StatusBar } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  StyleSheet,
+  Text,
+  Platform,
+  Dimensions,
+  TouchableOpacity,
+  StatusBar,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { SearchBar } from "react-native-elements";
 import TabOptions from "../../components/TabOptions";
 import fetchData from "../../backend/FetchData";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import theme from "../theme";
 
 const styles = StyleSheet.create({
@@ -21,7 +31,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
     borderRadius: 5,
-    height: Dimensions.get('window').height - 300 ,
+    height: Dimensions.get("window").height - 300,
     marginVertical: 15,
     marginHorizontal: 10,
     borderRadius: 10,
@@ -43,7 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    fontFamily: Platform.OS === "android" ? "Roboto" : "Helvetica",
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
   },
   categoryImage: {
     borderTopLeftRadius: 5,
@@ -53,14 +63,14 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 1,
     marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 8,
   },
 });
 
-export default ({navigation}) => {
+export default ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
-  const [categoryIndex, setCategoryIndex] = useState(0);
+  const [classificationIndex, setClassificationIndex] = useState("0");
   const ref = useRef(null);
   //Getting categories
   let { loading, data: categories } = fetchData("category/");
@@ -68,20 +78,25 @@ export default ({navigation}) => {
   //SettingUp the top Header style
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'ClotheStore',
+      title: "ClotheStore",
       headerRight: () => (
-          <TouchableOpacity onPress={() => navigation.navigate('signin')}>
-              <Ionicons name = { 'person' } size = { 25 } color={theme.COLORS.WHITE} style={{marginRight: 10}}/>  
-          </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("signin")}>
+          <Ionicons
+            name={"person"}
+            size={25}
+            color={theme.COLORS.WHITE}
+            style={{ marginRight: 10 }}
+          />
+        </TouchableOpacity>
       ),
-    })
+    });
   }, [navigation]);
 
   //Options configuration
   const [tabOptions, setTabOptions] = useState([
-    { key: 0, name: "Women", checked: true, onPress: () => {}},
-    { key: 1, name: "Men", checked: false, onPress: () => {}},
-    { key: 2, name: "Kids", checked: false, onPress: () => {}},
+    { key: "0", name: "Women", checked: true, onPress: () => {} },
+    { key: "1", name: "Men", checked: false, onPress: () => {} },
+    { key: "2", name: "Kids", checked: false, onPress: () => {} },
   ]);
 
   //Check option onPreess event
@@ -98,44 +113,73 @@ export default ({navigation}) => {
     });
 
     setTabOptions(newTabOptions);
+    setClassificationIndex(key);
+
+    console.log("key " + key);
+    console.log("classificationIndex " + classificationIndex);
   };
 
   //Assign function
   useEffect(() => {
     let newTabOptions = [];
     tabOptions.forEach((x) => {
-    //onPress function
-    x.onPress = checkOption;
-    newTabOptions.push(x);
+      //onPress function
+      x.onPress = checkOption;
+      newTabOptions.push(x);
     });
 
     setTabOptions(newTabOptions);
-}, []);
+  }, []);
+
+  //Search products events
+  const searchByCategory = (categoryName, categoryId) => {
+    //Go to home and search by classification and category
+    navigation.navigate("searchResults", {
+      productClassification:
+        tabOptions[tabOptions.findIndex((x) => x.checked)].name,
+      productCategoryId: categoryId,
+      productCategoryName: categoryName,
+    });
+  };
+
+  const searchByProductName = () => {
+    //Go to home and search by classification and category
+    navigation.navigate("searchResults", {
+      productName: searchText,
+    });
+  };
 
   //Render carousel
   const renderItem = useCallback(
     ({ item, index }, parallaxProps) => (
-      <View style={styles.card}>
-        <ParallaxImage
-          source={{ uri: item.url }}
-          containerStyle={styles.imageContainer}
-          style={styles.categoryImage}
-          parallaxFactor={0.4}
-          {...parallaxProps}
-        />
-        <View style={{ alignSelf: "stretch", height: 49 }}>
-          <Text style={styles.categoryText}>
-            {item.categoryName.toUpperCase()}
-          </Text>
+      <TouchableWithoutFeedback
+        onPress={() => searchByCategory(item.categoryName, item.id)}
+      >
+        <View style={styles.card}>
+          <ParallaxImage
+            source={{ uri: item.url }}
+            containerStyle={styles.imageContainer}
+            style={styles.categoryImage}
+            parallaxFactor={0.4}
+            {...parallaxProps}
+          />
+          <View style={{ alignSelf: "stretch", height: 49 }}>
+            <Text style={styles.categoryText}>
+              {item.categoryName.toUpperCase()}
+            </Text>
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     ),
     []
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={theme.COLORS.PRIMARY}
+      ></StatusBar>
       <SearchBar
         containerStyle={styles.searchContainer}
         inputContainerStyle={{ backgroundColor: "transparent" }}
@@ -145,6 +189,7 @@ export default ({navigation}) => {
         showCancel={true}
         searchIcon={{ size: 24 }}
         cancelIcon={{ size: 24 }}
+        onSubmitEditing={() => searchByProductName()}
       />
       <TabOptions
         options={tabOptions}
@@ -160,7 +205,6 @@ export default ({navigation}) => {
           itemWidth={320}
           renderItem={renderItem}
           hasParallaxImages={true}
-          onSnapToItem={(index) => setCategoryIndex(index)}
         />
       </View>
     </SafeAreaView>

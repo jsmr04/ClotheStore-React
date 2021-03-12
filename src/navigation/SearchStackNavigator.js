@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SearchScreen from '../screens/store/Search'
 import SignScreen from '../screens/authentication/Signin'
+import SearchResultsScreen from '../screens/store/SearchResults'
 import theme from '../screens/theme';
 
 const Stack = createStackNavigator();
@@ -29,6 +30,13 @@ function App() {
         component={SignScreen} 
         options={{
             title: 'Sign In',
+        }}
+        />
+        <Stack.Screen
+          name="searchResults"
+          component={SearchResultsScreen}
+          options={{
+            title: 'Results',
         }}
         />
       </Stack.Navigator>

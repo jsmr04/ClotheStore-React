@@ -1,3 +1,6 @@
+import React from 'react'
+import { Platform } from 'react-native'
+
 const COLORS = {
     WHITE: '#FFFFFF',
     BLACK: '#000000',
@@ -28,6 +31,10 @@ const COLORS = {
     OPACITY: 0.8,
   };
 
+  const FONT = {
+    DEFAULT_FONT_FAMILY: Platform.OS === 'android' ? 'Roboto' :  'Helvetica',
+  }
+
   const horizontalAnimation = {
     cardStyleInterpolator: ({ current, layouts }) => {
       return {
@@ -49,4 +56,5 @@ const COLORS = {
     COLORS,
     SIZES,
     horizontalAnimation,
+    FONT,
   };
