@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SearchScreen from '../screens/store/Search'
 import SignScreen from '../screens/authentication/Signin'
 import SearchResultsScreen from '../screens/store/SearchResults'
+import ItemDetails from '../screens/store/ItemDetails'
 import theme from '../screens/theme';
 
 const Stack = createStackNavigator();
@@ -38,6 +39,11 @@ function App() {
           options={{
             title: 'Results',
         }}
+        />
+        <Stack.Screen 
+        name="item" 
+        component={ItemDetails} 
+        options={theme.horizontalAnimation}
         />
       </Stack.Navigator>
     </NavigationContainer>

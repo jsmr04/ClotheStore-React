@@ -212,7 +212,7 @@ export default ({route, navigation}) => {
                 <Text style={{fontSize: 20}}>Description</Text> 
             </View>
             <View style={styles.viewDescriptionBody}> 
-                <Text style={{fontSize: 17}}>{item.description}</Text>
+                <Text style={{fontSize: 17, textAlign:'justify'}}>{item.description}</Text>
             </View>
         </ScrollView>
       

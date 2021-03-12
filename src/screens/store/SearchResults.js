@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import theme from "../theme";
 import fetchData from "../../backend/FetchData";
@@ -36,16 +37,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
   },
   activity: {
-    position:'absolute', 
-    top: Dimensions.get('window').height / 2 , 
-    right: Dimensions.get('window').width / 2 - 20
+    position: "absolute",
+    top: Dimensions.get("window").height / 2,
+    right: Dimensions.get("window").width / 2 - 20,
   },
-  textResults:{
+  textResults: {
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize:16,
-    paddingHorizontal:5,
-    paddingVertical:10,
-  }
+    fontSize: 16,
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+  },
 });
 
 export default ({ route, navigation }) => {
@@ -57,42 +58,45 @@ export default ({ route, navigation }) => {
     productName: productName,
   } = route.params;
 
-
   //Filters
   const filterByClassAndCat = (x) => {
-    return x.classification == classification && x.category == categoryId
-  }
+    return x.classification == classification && x.category == categoryId;
+  };
 
   const filterByProductName = (x) => {
-    return x.name.toUpperCase().includes(productName.toUpperCase())
-  }
+    return x.name.toUpperCase().includes(productName.toUpperCase());
+  };
 
-  const filteredProducts = products.filter(x => productName? filterByProductName(x) : filterByClassAndCat(x))
+  const filteredProducts = products.filter((x) =>
+    productName ? filterByProductName(x) : filterByClassAndCat(x)
+  );
 
   const renderCard = (item) => {
     return (
-      <View style={styles.cardContainer}>
-        <Image style={styles.image} source={{ uri: item.pictures[0].url }} />
-        <View style={styles.textContainer}>
-          <Text
-            style={{
-              flexWrap: "wrap",
-              fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-            }}
-          >
-            {item.name}
-          </Text>
-          <Text
-            style={{
-              textAlign: "right",
-              fontWeight: "500",
-              fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-            }}
-          >
-            {`C${Util.formatter.format(item.price)}`}
-          </Text>
+      <TouchableOpacity onPress = {() => navigation.navigate('item', {item: item})}>
+        <View style={styles.cardContainer}>
+          <Image style={styles.image} source={{ uri: item.pictures[0].url }} />
+          <View style={styles.textContainer}>
+            <Text
+              style={{
+                flexWrap: "wrap",
+                fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+              }}
+            >
+              {item.name}
+            </Text>
+            <Text
+              style={{
+                textAlign: "right",
+                fontWeight: "500",
+                fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+              }}
+            >
+              {`C${Util.formatter.format(item.price)}`}
+            </Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -107,9 +111,11 @@ export default ({ route, navigation }) => {
       ) : (
         <>
           <View>
-            <Text style={ styles.textResults }>{ `${filteredProducts.length} RESULTS` }</Text>
+            <Text
+              style={styles.textResults}
+            >{`${filteredProducts.length} RESULTS`}</Text>
           </View>
-          
+
           <FlatList
             vertical
             showsVerticalScrollIndicator={false}
