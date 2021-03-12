@@ -6,7 +6,7 @@ import { createAppContainer } from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 
 //Screens
-import HomeScreen from "../screens/store/Home";
+import HomeStackScreen from "../navigation/HomeStackNavigator";
 import SearchScreen from "../screens/store/Search";
 import FavoriteScreen from "../screens/store/Favorite";
 import CartScreen from "../screens/store/Cart";
@@ -23,7 +23,7 @@ const tabBarOptions = {
 const appNavigator = createBottomTabNavigator(
   {
     Home: {
-      screen: HomeScreen,
+      screen: HomeStackScreen,
       navigationOptions:{
         tabBarLabel: 'Home',
         tabBarOptions: tabBarOptions, 
@@ -63,7 +63,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
   },
-  { initialRouteName: 'Home' }
+  { initialRouteName: 'Home' }, {tabStyle: {backgroundColor: theme.COLORS.PRIMARY}}
 );
 
 //Export  navigator

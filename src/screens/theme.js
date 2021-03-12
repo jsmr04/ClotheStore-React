@@ -27,7 +27,7 @@ const COLORS = {
     FONT: 16,
     OPACITY: 0.8,
   };
-  
+
   export default {
     COLORS,
     SIZES,

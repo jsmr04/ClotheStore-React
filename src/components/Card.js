@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons'
 // galio components
 import Block from './Block';
 import Text from '../../node_modules/galio-framework/src/atomic/ions/Text';
-import Icon from '../../node_modules/galio-framework/src/atomic/ions/Icon';
 import GalioTheme, { withGalio } from '../../node_modules/galio-framework/src/theme';
 import Theme from "../screens/theme"
 
@@ -160,7 +159,7 @@ const styles = theme =>
     },
     image: {
       width: 'auto',
-      height: theme.SIZES.CARD_IMAGE_HEIGHT,
+      height: 16 * 25,
     },
     round: {
       borderRadius: theme.SIZES.CARD_ROUND,

@@ -1,12 +1,12 @@
 import React from "react";
-import { ActivityIndicator, View, StyleSheet, FlatList, Dimensions } from "react-native";
+import { ActivityIndicator, View, StyleSheet, FlatList, Dimensions, StatusBar, TouchableOpacity } from "react-native";
 // import { SafeAreaView, View, StyleSheet, FlatList, Image, Text, StatusBar } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import fetchData from "../../backend/FetchData";
 import Card from "../../components/Card";
 import Block from "../../components/Block";
 import theme from "../theme";
 import Util from "../../helpers/Util"
-import TopBar from "../../components/TopBar"
 
 //Screen Style
 const styles = StyleSheet.create({
@@ -36,12 +36,23 @@ const styles = StyleSheet.create({
 });
 
 //Screen
-export default () => {
+export default ({navigation}) => {
   let { loading, data: products } = fetchData("product/");
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'ClotheStore',
+      headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate('signin')}>
+              <Ionicons name = { 'person' } size = { 25 } color={theme.COLORS.WHITE} style={{marginRight: 10}}/>  
+          </TouchableOpacity>
+      ),
+    })
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      <TopBar/>
+      <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
       { loading ? 
         <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
       : 
