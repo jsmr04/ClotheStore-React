@@ -7,9 +7,9 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 
 //Screens
 import HomeStackScreen from "../navigation/HomeStackNavigator";
-import SearchScreen from "../screens/store/Search";
-import FavoriteScreen from "../screens/store/Favorite";
-import CartScreen from "../screens/store/Cart";
+import SearchStackScreen from "../navigation/SearchStackNavigator";
+import FavoriteStackScreen from "../navigation/FavoriteStackNavigator";
+import CartStackScreen from "../navigation/CartStackNavigator";
 
 //Theme
 import theme from '../screens/theme'
@@ -17,6 +17,10 @@ import theme from '../screens/theme'
 //TabOptions
 const tabBarOptions = {
   activeTintColor: theme.COLORS.PRIMARY,
+  style: {
+    padding: 10,
+    height: 50,
+  },
 }
 
 //Navigation settings
@@ -33,7 +37,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
     Search: {
-      screen: SearchScreen,
+      screen: SearchStackScreen,
       navigationOptions:{
         tabBarLabel: 'Search',
         tabBarOptions: tabBarOptions, 
@@ -43,7 +47,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
     Favorites: {
-      screen: FavoriteScreen,
+      screen: FavoriteStackScreen,
       navigationOptions:{
         tabBarLabel: 'Favorites',
         tabBarOptions: tabBarOptions, 
@@ -53,7 +57,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
     Cart: {
-      screen: CartScreen,
+      screen: CartStackScreen,
       navigationOptions:{
         tabBarLabel: 'Cart',
         tabBarOptions: tabBarOptions, 

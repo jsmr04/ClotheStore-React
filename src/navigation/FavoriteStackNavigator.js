@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/store/Home';
-import SignScreen from '../screens/authentication/Signin';
-import ItemDetailScreen from '../screens/store/ItemDetails'; 
+import FavoriteScreen from '../screens/store/Favorite'
+import SignScreen from '../screens/authentication/Signin'
 import theme from '../screens/theme';
 
 const Stack = createStackNavigator();
@@ -17,15 +16,13 @@ const MyTheme = {
     },
 };
 
-
 function App() {
-
-  return ( 
+  return (
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator initialRouteName="home" mode="modal">
         <Stack.Screen 
         name="home" 
-        component={HomeScreen} 
+        component={FavoriteScreen} 
         />
         <Stack.Screen 
         name="signin" 
@@ -33,11 +30,6 @@ function App() {
         options={{
             title: 'Sign In',
         }}
-        />
-        <Stack.Screen 
-        name="item" 
-        component={ItemDetailScreen} 
-        options={theme.horizontalAnimation}
         />
       </Stack.Navigator>
     </NavigationContainer>

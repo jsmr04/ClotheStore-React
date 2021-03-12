@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/store/Home';
-import SignScreen from '../screens/authentication/Signin';
-import ItemDetailScreen from '../screens/store/ItemDetails'; 
+import SearchScreen from '../screens/store/Search'
+import SignScreen from '../screens/authentication/Signin'
+import SearchResultsScreen from '../screens/store/SearchResults'
 import theme from '../screens/theme';
 
 const Stack = createStackNavigator();
@@ -17,15 +17,13 @@ const MyTheme = {
     },
 };
 
-
 function App() {
-
-  return ( 
+  return (
     <NavigationContainer theme={MyTheme}>
       <Stack.Navigator initialRouteName="home" mode="modal">
         <Stack.Screen 
         name="home" 
-        component={HomeScreen} 
+        component={SearchScreen} 
         />
         <Stack.Screen 
         name="signin" 
@@ -34,10 +32,12 @@ function App() {
             title: 'Sign In',
         }}
         />
-        <Stack.Screen 
-        name="item" 
-        component={ItemDetailScreen} 
-        options={theme.horizontalAnimation}
+        <Stack.Screen
+          name="searchResults"
+          component={SearchResultsScreen}
+          options={{
+            title: 'Results',
+        }}
         />
       </Stack.Navigator>
     </NavigationContainer>

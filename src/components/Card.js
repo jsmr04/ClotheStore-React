@@ -8,6 +8,7 @@ import Block from './Block';
 import Text from '../../node_modules/galio-framework/src/atomic/ions/Text';
 import GalioTheme, { withGalio } from '../../node_modules/galio-framework/src/theme';
 import Theme from "../screens/theme"
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function Card({
   avatar,
@@ -29,6 +30,7 @@ function Card({
   title, 
   titleColor,
   theme,
+  onPress,
   ...props 
 }) {
   function renderImage() {
@@ -93,9 +95,11 @@ function Card({
 
   return (
     <Block {...props} card={card} shadow={shadow} style={styleCard}>
-      {renderImage()}
-      {renderAuthor()}
-      {children}
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        {renderImage()}
+        {renderAuthor()}
+        {children}
+      </TouchableOpacity>
     </Block>
   );
 }

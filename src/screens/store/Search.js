@@ -1,18 +1,21 @@
-import theme from "../theme";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
+  SafeAreaView,
   View,
   StyleSheet,
   Text,
   Platform,
   Dimensions,
+  TouchableOpacity,
+  StatusBar,
   TouchableWithoutFeedback,
 } from "react-native";
 import { SearchBar } from "react-native-elements";
-import TopBar from "../../components/TopBar";
 import TabOptions from "../../components/TabOptions";
 import fetchData from "../../backend/FetchData";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
+import { Ionicons } from "@expo/vector-icons";
+import theme from "../theme";
 
 const styles = StyleSheet.create({
   container: {
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
     borderRadius: 5,
-    height: Dimensions.get("window").height - 350,
+    height: Dimensions.get("window").height - 300,
     marginVertical: 15,
     marginHorizontal: 10,
     borderRadius: 10,
@@ -50,10 +53,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    fontFamily: Platform.OS === "android" ? "Roboto" : "Helvetica",
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
   },
   categoryImage: {
-    height: Dimensions.get("window").height - 400,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
@@ -68,16 +70,33 @@ const styles = StyleSheet.create({
 
 export default ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
-  const [classificationIndex, setClassificationIndex] = useState(0);
+  const [classificationIndex, setClassificationIndex] = useState("0");
   const ref = useRef(null);
   //Getting categories
   let { loading, data: categories } = fetchData("category/");
 
+  //SettingUp the top Header style
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      title: "ClotheStore",
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate("signin")}>
+          <Ionicons
+            name={"person"}
+            size={25}
+            color={theme.COLORS.WHITE}
+            style={{ marginRight: 10 }}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   //Options configuration
   const [tabOptions, setTabOptions] = useState([
-    { key: 0, name: "Women", checked: true, onPress: () => {} },
-    { key: 1, name: "Men", checked: false, onPress: () => {} },
-    { key: 2, name: "Kids", checked: false, onPress: () => {} },
+    { key: "0", name: "Women", checked: true, onPress: () => {} },
+    { key: "1", name: "Men", checked: false, onPress: () => {} },
+    { key: "2", name: "Kids", checked: false, onPress: () => {} },
   ]);
 
   //Check option onPreess event
@@ -93,8 +112,11 @@ export default ({ navigation }) => {
       newTabOptions.push(x);
     });
 
-    setClassificationIndex(key);
     setTabOptions(newTabOptions);
+    setClassificationIndex(key);
+
+    console.log("key " + key);
+    console.log("classificationIndex " + classificationIndex);
   };
 
   //Assign function
@@ -106,24 +128,33 @@ export default ({ navigation }) => {
       newTabOptions.push(x);
     });
 
-  
     setTabOptions(newTabOptions);
   }, []);
 
   //Search products events
-  const searchByCategory = (categoryName)=> {
+  const searchByCategory = (categoryName, categoryId) => {
     //Go to home and search by classification and category
-    navigation.navigate('Home', {
-        productClassification: tabOptions[classificationIndex].name.toLowerCase(),
-        productCategory: categoryName
-    })
+    navigation.navigate("searchResults", {
+      productClassification:
+        tabOptions[tabOptions.findIndex((x) => x.checked)].name,
+      productCategoryId: categoryId,
+      productCategoryName: categoryName,
+    });
+  };
 
-  }
+  const searchByProductName = () => {
+    //Go to home and search by classification and category
+    navigation.navigate("searchResults", {
+      productName: searchText,
+    });
+  };
 
   //Render carousel
   const renderItem = useCallback(
     ({ item, index }, parallaxProps) => (
-      <TouchableWithoutFeedback onPress={() => searchByCategory(item.categoryName)}>
+      <TouchableWithoutFeedback
+        onPress={() => searchByCategory(item.categoryName, item.id)}
+      >
         <View style={styles.card}>
           <ParallaxImage
             source={{ uri: item.url }}
@@ -138,14 +169,17 @@ export default ({ navigation }) => {
             </Text>
           </View>
         </View>
-     </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
     ),
     []
   );
 
   return (
-    <View style={styles.container}>
-      <TopBar />
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={theme.COLORS.PRIMARY}
+      ></StatusBar>
       <SearchBar
         containerStyle={styles.searchContainer}
         inputContainerStyle={{ backgroundColor: "transparent" }}
@@ -155,23 +189,24 @@ export default ({ navigation }) => {
         showCancel={true}
         searchIcon={{ size: 24 }}
         cancelIcon={{ size: 24 }}
+        onSubmitEditing={() => searchByProductName()}
       />
       <TabOptions
         options={tabOptions}
         highlightColor={theme.COLORS.PRIMARY}
         titleColor={theme.COLORS.TITLE}
       />
-      <View style={{ alignSelf: "center", height: 570 }}>
+      <View style={{ alignSelf: "center" }}>
         <Carousel
           layout={"default"}
           ref={ref}
           data={categories}
           sliderWidth={400}
-          itemWidth={300}
+          itemWidth={320}
           renderItem={renderItem}
           hasParallaxImages={true}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
