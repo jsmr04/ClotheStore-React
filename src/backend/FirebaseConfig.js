@@ -13,8 +13,6 @@ export default () => {
             appId: "1:521700687251:web:c0883920e68ec45cce3c66",
             measurementId: "G-TNNQPZMKVB"
         };
-        //console.log('firebase.initializeApp(firebaseConfig);')
-        //console.log(firebase)
         
         firebase.initializeApp(firebaseConfig);
     }
