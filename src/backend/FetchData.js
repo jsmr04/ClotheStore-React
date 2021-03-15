@@ -14,7 +14,7 @@ export default (path) => {
     //Init Firebase
     const firebase = FirebaseConfig();
     //Database
-    const productRef = firebase.database().ref(path);
+    const productRef = firebase.database().ref(path).limitToFirst(5);
     //Storage
     const storageRef = firebase.storage().ref('pictures'); 
 
@@ -23,7 +23,7 @@ export default (path) => {
       snapshot.forEach(function (childSnapshot) {
 
         tmpData.push(childSnapshot.val());
-    });
+      });
 
       //Update states
       setLoading(false);

@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useState, useLayoutEffect, useEffect} from "react";
 import { ActivityIndicator, RefreshControl, View, StyleSheet, FlatList, Dimensions, StatusBar, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from "../../backend/FetchData";
+import FirebaseConfig from "../../backend/FirebaseConfig";
 import Card from "../../components/Card";
 import Block from "../../components/Block";
 import theme from "../theme";
@@ -54,21 +55,84 @@ function checkfavorites(itemId){
   return icon;
 }
 
-const wait = (timeout) => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-}
-
 //Screen
 export default ({navigation}) => {
-  let { loading, data: products } = fetchData("product/");
-  const [refreshing, setRefreshing] = React.useState(false);
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
+  const firebase = FirebaseConfig();
+  const productRef = firebase.database().ref('/product');
+
+  let onEndReachedCallDuringMomentum = false;
+
+  let [products, setProducts] = useState([]);
+  let [loading, setLoading] = useState(false);
+  let [lastDoc, setLastDoc] = useState(null);
+  let [isMoreLoading, setIsMoreLoading] = useState(false);
+
+  const onRefresh = () => {
+    getProducts();
+  };
 
   loadFavorites();
-  React.useLayoutEffect(() => {
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  getProducts = () => {
+    setLoading(true)
+
+    productRef.limitToFirst(4).once("value", function (snapshot) {
+        if(!snapshot.empty){
+          //console.log(snapshot)
+          let newProducts = [];
+          snapshot.forEach(function (childSnapshot) {
+            newProducts.push(childSnapshot.val());
+            //console.log(childSnapshot.val());
+            setLastDoc(parseInt(childSnapshot.child('id').val()) +1);
+          })
+          setProducts(newProducts);
+          console.log(lastDoc)
+        } else {
+          setLastDoc(null)
+        }
+        setLoading(false);
+    });
+  }
+
+  getMore = async () => {
+    //alert("getMore")
+    if(lastDoc){
+      
+      setIsMoreLoading(true);
+      //alert(lastDoc.id)
+      productRef.orderByChild('id').startAt("00" + lastDoc.toString()).once("value", function (snapshot) {
+        if(snapshot.exists){
+          console.log(snapshot)
+            let newProducts = products;
+            //console.log(snapshot)
+            snapshot.forEach(function (childSnapshot) {
+              newProducts.push(childSnapshot.val());
+              setLastDoc(childSnapshot.val())
+            })
+            setProducts(newProducts);
+            if(snapshot.numChildren() < 4) setLastDoc(null)
+        } else {
+          alert("is null")
+          setLastDoc(null)
+        }
+      });
+      setIsMoreLoading(false);
+    }
+    onEndReachedCallDuringMomentum = true;
+  }
+
+  renderFooter = () => {
+    if (!isMoreLoading) return true;
+    return (
+      <ActivityIndicator style={{marginBottom: 10 }} size='large' color = { theme.COLORS.PRIMARY } />
+    )
+  }
+
+  useLayoutEffect(() => {
     navigation.setOptions({
       title: 'ClotheStore',
       headerRight: () => (
@@ -86,14 +150,8 @@ export default ({navigation}) => {
         <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
       : 
       <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-        style={styles.list}
         data={products}
+        style={styles.list}
         keyExtractor={(x) => x.id}
         renderItem={({ item }) => {
           return (
@@ -117,6 +175,21 @@ export default ({navigation}) => {
               />
             </Block>
           );
+        }}
+        ListFooterComponent={renderFooter}
+        initialNumToRender ={4}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={onRefresh}
+          />
+        }
+        onEndReachedThreshold = {0}
+        onMomentumScrollBegin = {() => {onEndReachedCallDuringMomentum = false;}}
+        onEndReached = {() => {
+          if (!onEndReachedCallDuringMomentum && !isMoreLoading) {
+            getMore();
+          } 
         }}
       />
     }
