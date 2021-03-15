@@ -15,6 +15,7 @@ import Util from "../../helpers/Util";
 import theme from "../theme";
 import Storage from "../../backend/LocalStorage";
 import { NavigationEvents } from "react-navigation";
+import Toast from 'react-native-toast-message';
 
 //Screen Style
 const styles = StyleSheet.create({
@@ -31,6 +32,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: theme.COLORS.TITLE,
     borderRadius: 5,
+    backgroundColor:theme.COLORS.WHITE,
 
     shadowColor: "#000",
     shadowOffset: {
@@ -143,6 +145,22 @@ export default ({ navigation }) => {
     });
   };
 
+  const addToCart = (item)=>{
+    Storage.save({
+        key: 'cart',
+        id: item.id,
+        data: {
+          item: item.id
+        },
+      }).then(()=>{
+        Toast.show({
+            text1: 'Hello there! 👋',
+            text2: 'This item was added into the Cart!'
+          });
+      })
+    
+  }
+
   useEffect(() => {
     showFavorites();
   }, [products]);
@@ -187,7 +205,7 @@ export default ({ navigation }) => {
           <Text style={styles.nameText}>{item.name}</Text>
 
           {/* Third line */}
-          <TouchableOpacity style={styles.addTouch}>
+          <TouchableOpacity style={styles.addTouch} onPress={() => addToCart(item)}>
             <View
               style={{
                 flexDirection: "row",
