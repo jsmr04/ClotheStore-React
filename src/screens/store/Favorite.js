@@ -183,42 +183,6 @@ export default ({ navigation }) => {
 
   const renderCard = (item) => {
     return (
-<<<<<<< HEAD
-        <View style = { styles.container }>
-            { loading ? 
-                <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
-            : 
-                <FlatList
-                    style={styles.list}
-                    data={products}
-                    keyExtractor={(x) => x.id}
-                    renderItem={({ item }) => {
-                    return (
-                        <Block space='between' >
-                        <Card
-                            style={styles.card}
-                            flex
-                            borderLess
-                            shadowColor={theme.COLORS.BLACK}
-                            title={item.name}
-                            location={'C' + Util.formatter.format(item.price)}
-                            imageStyle={styles.cardImage}
-                            image={item.pictures[0].url}
-                            onPress={() => {
-                            navigation.navigate('item', {
-                                item: item,
-                            });
-                            }}
-                        />
-                        </Block>
-                    );
-                    }}
-                />
-            }
-        </View> 
-    )
-}
-=======
       <View style={styles.cardContainer}>
         <Image style={styles.image} source={{ uri: item.pictures[0].url }} />
         <View style={styles.textContainer}>
@@ -293,4 +257,3 @@ export default ({ navigation }) => {
     </View>
   );
 };
->>>>>>> 3a9a7c197f643748f1e669b6cf82ae870d6b42ef
