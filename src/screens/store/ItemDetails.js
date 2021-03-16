@@ -6,7 +6,10 @@ import Carousel, { ParallaxImage, Pagination  } from "react-native-snap-carousel
 const { width: screenWidth } = Dimensions.get('window')
 import TabOptions from "../../components/TabOptions";
 import theme from "../theme";
+import Util from "../../helpers/Util"
 
+
+const {height } = Dimensions.get("window");
 
 //Screen
 export default ({route, navigation}) => {
@@ -72,7 +75,8 @@ export default ({route, navigation}) => {
               source={{ uri: item.url }}
               containerStyle={styles.imageContainer}
               style={styles.image}
-              parallaxFactor={0.35}
+              parallaxFactor={0.2}
+              shouldComponentUpdate={true}
               {...parallaxProps}
             />
             </View>
@@ -102,26 +106,13 @@ export default ({route, navigation}) => {
             itemWidth={screenWidth - 60}
             renderItem={renderItem}
             hasParallaxImages={true}
+            enableMomentum={true}
+            decelerationRate={0.9}
             onSnapToItem={(index) => setActiveSlide(index) }
-            />
-            <Pagination
-            carouselRef={ref}
-            dotsLength={item.pictures.length}
-            activeDotIndex={activeSlide}
-            containerStyle={{margin:0}}
-            dotStyle={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              marginHorizontal: 8, 
-              backgroundColor: theme.COLORS.PRIMARY 
-            }}
-            tappableDots={true}
-            inactiveDotOpacity={0.3}
-            inactiveDotScale={0.7}
             />
             <View style={styles.viewTitle}>
                 <Text style={styles.title}>{item.name}</Text>
+                <Text style={{fontSize: 20, fontWeight: '700', color: theme.COLORS.BLACK}}>{'C' + Util.formatter.format(item.price)}</Text>
             </View>
             <View style={styles.viewBody}>
                 <TabOptions
@@ -138,8 +129,9 @@ export default ({route, navigation}) => {
             <View style={styles.viewDescriptionBody}> 
                 <Text style={{fontSize: 17, textAlign:'justify'}}>{item.description}</Text>
             </View>
+        </ScrollView>
             <View style={styles.viewButtons}>
-              <View style={{marginTop: 20,}}>
+              <View style={{marginTop: 5,}}>
                   <TouchableOpacity style={[styles.button, styles.buttonCart]}>
                       <Text style={[styles.buttonText, {color: theme.COLORS.PRIMARY,}]}>
                       <Ionicons name = { 'cart-outline' } color = {theme.COLORS.PRIMARY} style={styles.buttonIcon}/>
@@ -156,7 +148,6 @@ export default ({route, navigation}) => {
                   </TouchableOpacity>
               </View>
             </View>
-        </ScrollView>
     </View>
   );
 };
@@ -170,10 +161,10 @@ const styles = StyleSheet.create({
   },
   card: {
     width: screenWidth - 60,
-    height: 16*35,
+    height: 16*30,
   },
   scrollView: {
-      flex:0.7,
+      height: height - 200,
   },
   image: {
     ...StyleSheet.absoluteFillObject,
@@ -186,28 +177,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   viewTitle: {
-    padding: 5,
-    flex:1, 
-    alignItems: 'center'
+    paddingTop: 10,
+    paddingLeft: 10,
+    paddingBottom: 10,
   },
   title: {
-      fontSize: 25,
-      textAlign: 'center'
+      fontSize: 30,
+      fontWeight: "300"
   },
   viewBody: {
-    flex:1,
     padding:10,
     marginTop: 10,
   },
   viewButtons: {
     width: '95%',
-    position: 'absolute',
-    bottom: 0,
+    marginBottom: 10,
     marginLeft: 10,
     marginRight: 10,
   },
   button: {
-    flex:1,
     height: 47,
     borderRadius: 3,
     flexDirection: 'row',

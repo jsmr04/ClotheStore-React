@@ -1,26 +1,14 @@
 import React, { useState } from "react";
-import { View, TextInput, StyleSheet, Dimensions } from "react-native";
+import { View, TextInput, StyleSheet, Dimensions} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const { width, height } = Dimensions.get("screen");
 
-const Input = ({ icon, size, placeholder, onChangeText }) => {
+const Input = ({ icon, size, placeholder, onChangeText, keyboardType, secureEntry, textContentType }) => {
   const [inFocus, setInFocus] = useState(false);
 
   return (
-    <View
-      style={[
-        styles.container,
-        inFocus
-          ? {
-              shadowColor: "#ccc",
-              shadowOffset: { width: 8, height: 8 },
-              shadowOpacity: 1.35,
-              elevation: 8,
-            }
-          : null,
-      ]}
-    >
+    <View style={styles.container} onPress={() => setInFocus(true)}>
       <View style={styles.icon}>
         <Ionicons
           name={icon}
@@ -30,9 +18,12 @@ const Input = ({ icon, size, placeholder, onChangeText }) => {
       </View>
       <View style={styles.input}>
         <TextInput
+          textContentType={textContentType}
+          keyboardType={keyboardType}
+          secureTextEntry={secureEntry}
           onFocus={() => setInFocus(true)}
           onBlur={() => setInFocus(false)}
-          style={{ fontSize: 16 }}
+          style={{ fontSize: 18 }}
           placeholder={placeholder}
           placeholderTextColor="#555"
           onChangeText={onChangeText}
@@ -59,8 +50,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 0.8,
-    padding: 10,
-    marginLeft: 10,
+    padding: 14,
   },
 });
 

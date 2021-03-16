@@ -1,53 +1,48 @@
 import React, { useState, useLayoutEffect } from "react";
-import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, Keyboard, TouchableWithoutFeedback} from "react-native";
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, Keyboard, TouchableWithoutFeedback} from "react-native";
 import Input from "../../components/Input";
-import theme from "../theme";
+import theme from '../theme';
 
 const { width, height } = Dimensions.get("screen");
 
-export default ({ navigation }) => {
+export default ({navigation}) => {
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: "Personal Information",
-    });
+      title: 'Delivery Address',
+    })
   });
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.mainContainer}>
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-          <View style={{ width: "100%" }}>
+            <View style={{ width: "100%" }}>
             <View style={styles.headerContainer}>
-              <View style={styles.headerTitleContainer}>
-                <Text style={styles.headerTitle}>Registration</Text>
-              </View>
+                <View style={styles.headerTitleContainer}>
+                <Text style={styles.headerTitle}>Delivery Address</Text>
+                </View>
             </View>
-          </View>
+            </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-          <View>
-            <Input icon="md-person" placeholder="First Name" keyboardType="default" textContentType="name"/>
-            <Input icon="md-person" placeholder="Last Name" keyboardType="default" textContentType="familyName"/>
-            <Input icon="md-mail" placeholder="Email" keyboardType="email-address" textContentType="emailAddress"/>
-            <Input icon="key" placeholder="Password" secureEntry={true} textContentType="newPassword"/>
-            <Input icon="key" placeholder="Confirm Password" secureEntry={true} textContentType="newPassword"/>
-          </View>
+            <View>
+            <Input icon="ios-location-sharp" placeholder="Address" keyboardType="default" textContentType="fullStreetAddress"/>
+            <Input icon="map" placeholder="Province" keyboardType="default" textContentType="addressState"/>
+            <Input icon="map" placeholder="Country" keyboardType="default" textContentType="countryName"/>
+            <Input icon="ios-location-sharp" placeholder="Postal Code" keyboardType="default" textContentType="postalCode"/>
+            </View>
         </TouchableWithoutFeedback>
+        
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              navigation.navigate("registerAdress");
-            }}
-          >
-            <Text style={styles.text}>Next</Text>
+          <TouchableOpacity style={styles.button}> 
+            <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
         </View>
         <Text>© Team South - 2021</Text>
       </SafeAreaView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

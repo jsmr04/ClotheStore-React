@@ -17,90 +17,7 @@ import Storage from "../../backend/LocalStorage";
 import { NavigationEvents } from "react-navigation";
 import Toast from 'react-native-toast-message';
 
-//Screen Style
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignContent: "center",
-    backgroundColor: theme.COLORS.WHITE,
-  },
-  cardContainer: {
-    flex: 1,
-    flexDirection: "row",
-    marginHorizontal: 6,
-    marginVertical: 6,
-    borderWidth: 0.5,
-    borderColor: theme.COLORS.TITLE,
-    borderRadius: 5,
-    backgroundColor:theme.COLORS.WHITE,
 
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
-  },
-  image: {
-    width: Dimensions.get("window").width / 3,
-    height: Dimensions.get("window").width / 3,
-    borderTopLeftRadius: 5,
-    borderBottomLeftRadius: 5,
-  },
-
-  textContainer: {
-    flex: 1,
-    backgroundColor: theme.COLORS.WHITE,
-    paddingVertical: 6,
-    paddingHorizontal: 3,
-    justifyContent: "flex-start",
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  activity: {
-    position: "absolute",
-    top: Dimensions.get("window").height / 2,
-    right: Dimensions.get("window").width / 2 - 20,
-  },
-  textResults: {
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize: 16,
-    paddingHorizontal: 5,
-    paddingVertical: 10,
-  },
-  addText: {
-    textAlign: "right",
-    fontSize: 18,
-    fontWeight: "600",
-    color: theme.COLORS.TITLE,
-  },
-  addTouch: {
-    flex: 1,
-    alignSelf: "flex-end",
-    marginHorizontal: 3,
-  },
-  priceText: {
-    textAlign: "left",
-    fontWeight: "500",
-    fontStyle: "italic",
-    fontSize: 17,
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    flex: 10,
-  },
-  priceView: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  nameText: {
-    flexWrap: "wrap",
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize: 15,
-    flex: 10,
-  },
-});
 
 const checkItemExists = (data, id) => {
   return data.find((x) => x === id);
@@ -210,6 +127,7 @@ export default ({ navigation }) => {
               style={{
                 flexDirection: "row",
                 borderWidth: 1.5,
+                borderRadius: 5,
                 borderColor: theme.COLORS.TITLE,
                 padding: 3,
               }}
@@ -257,3 +175,89 @@ export default ({ navigation }) => {
     </View>
   );
 };
+
+//Screen Style
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignContent: "center",
+    backgroundColor: theme.COLORS.WHITE,
+  },
+  cardContainer: {
+    flex: 1,
+    flexDirection: "row",
+    marginHorizontal: 6,
+    marginVertical: 6,
+    borderWidth: 0.5,
+    borderColor: theme.COLORS.TITLE,
+    borderRadius: 5,
+    backgroundColor:theme.COLORS.WHITE,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  image: {
+    width: Dimensions.get("window").width / 3,
+    height: Dimensions.get("window").width / 3,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+  },
+
+  textContainer: {
+    flex: 1,
+    backgroundColor: theme.COLORS.WHITE,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    justifyContent: "flex-start",
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+  },
+  activity: {
+    position: "absolute",
+    top: Dimensions.get("window").height / 2,
+    right: Dimensions.get("window").width / 2 - 20,
+  },
+  textResults: {
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    color: theme.COLORS.PRIMARY,
+    fontSize: 16,
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+  },
+  addText: {
+    textAlign: "right",
+    fontSize: 18,
+    fontWeight: "600",
+    color: theme.COLORS.TITLE,
+  },
+  addTouch: {
+    flex: 1,
+    alignSelf: "flex-end",
+    marginHorizontal: 3,
+  },
+  priceText: {
+    textAlign: "left",
+    fontWeight: "500",
+    fontStyle: "italic",
+    fontSize: 17,
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    flex: 10,
+  },
+  priceView: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  nameText: {
+    flexWrap: "wrap",
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    fontSize: 15,
+    flex: 10,
+  },
+});
