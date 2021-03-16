@@ -15,6 +15,7 @@ const {height } = Dimensions.get("window");
 export default ({route, navigation}) => {
     const ref = useRef(null);
     const { item } = route.params;
+    const [dataImages, setDataImages] = useState([])
 
     let [activeSlide, setActiveSlide] = useState(0);
 
@@ -84,6 +85,7 @@ export default ({route, navigation}) => {
         []
     );
 
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: 'ClotheStore',
@@ -95,12 +97,18 @@ export default ({route, navigation}) => {
     })
   }, [navigation]);
 
+  //States for images
+  useEffect(()=>{
+    setDataImages(item.pictures)
+  }, item.pictures)
+
+
   return (
     <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
             <Carousel
             ref={ref}
-            data={item.pictures}
+            data={dataImages}
             sliderWidth={screenWidth}
             sliderHeight={screenWidth}
             itemWidth={screenWidth - 60}
@@ -165,6 +173,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
       height: height - 200,
+      paddingTop:10,
   },
   image: {
     ...StyleSheet.absoluteFillObject,
