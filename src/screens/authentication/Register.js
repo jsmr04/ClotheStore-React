@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { CheckBox, StyleSheet, View, Dimensions, Animated, Text} from "react-native";
+import { StyleSheet, View, Dimensions, Animated, Text, Image, TouchableOpacity} from "react-native";
 import { Input, Header, Button, Icon } from "./registerstyles";
 
 const { height } = Dimensions.get("screen");
 
 export default function App() {
   const [alignment, setAlignment] = useState(new Animated.Value(0));
-  const [isSelected, setSelection] = useState(false);
+
   const toDocumentsPage = () => {
     Animated.timing(alignment, {
       toValue: 1,
@@ -58,22 +58,37 @@ export default function App() {
       <Animated.View style={[styles.mainContainer, mainContainerStyle]}>
 
         <View style={{ width: "100%" }}>
-          <Header title="Please sign in"/>
+          <Header title="Create Account"/>
         </View>
         <View>
+          <Input icon="md-person" placeholder="First Name" />
+          <Input icon="md-person" placeholder="Last Name" />
           <Input icon="md-mail" placeholder="Email" />
           <Input icon="key" placeholder="Password" />
-          <CheckBox
-          value={isSelected}
-          onValueChange={setSelection}
-          style={styles.checkbox}
-        />
-        <Text style={styles.label}>Remember me</Text>
+          <Input icon="key" placeholder="Confirm Password" />
         </View>
-        <Button title="Sign in" />
-        <Text>Don't have an account?</Text>
-        <Button title="Register" />
+        <Button onPress={() => toDocumentsPage()} title="Create Account" />
         
+        <Text>© Team South - 2021</Text>
+      </Animated.View>
+      <Animated.View style={[styles.mainContainer, documentContainerStyle]}>
+        <Icon
+          name="chevron-left"
+          onPress={() => backToMainComponent()}
+          size={30}
+        />
+        <View style={{ width: "100%" }}>
+          <Header
+            title="Personal Information"
+          />
+        </View>
+        <View>
+          <Input icon="md-person" placeholder="First Name" />
+          <Input icon="md-person" placeholder="Last Name" />
+          <Input icon="mail" placeholder="Email address" />
+          <Input icon="ios-home" placeholder="Address" />
+        </View>
+        <Button title="NEXT" />
         <Text>© Team South - 2021</Text>
       </Animated.View>
     </View>
