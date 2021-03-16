@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   textResults: {
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
     fontSize: 16,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     paddingVertical: 10,
   },
 });

@@ -80,7 +80,6 @@ export default ({navigation}) => {
 
     return (
         <View style = { styles.container }>
-            <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
             { loading ? 
                 <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
             : 
@@ -111,7 +110,6 @@ export default ({navigation}) => {
                     }}
                 />
             }
-        </View>
-        
+        </View> 
     )
 }

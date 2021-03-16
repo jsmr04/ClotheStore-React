@@ -150,7 +150,6 @@ Card.propTypes = {
   styles: PropTypes.any,
   theme: PropTypes.any,
   title: PropTypes.string,
-  itemId: PropTypes.string,
   activeIcon: PropTypes.string,
   titleColor: PropTypes.string,
   caption: PropTypes.string,

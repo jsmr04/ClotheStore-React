@@ -25,7 +25,6 @@ export default ({navigation}) => {
 
     return (
         <View style = { styles.container }>
-            <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
             <Text>I'm Cart</Text>
         </View>
         

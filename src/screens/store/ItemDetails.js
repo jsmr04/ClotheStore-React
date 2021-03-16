@@ -168,7 +168,6 @@ export default ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
         <ScrollView style={styles.scrollView}>
             <View style={{flex:1, borderBottomColor: 'lightgray', borderBottomWidth: 2}}>
                 <Carousel

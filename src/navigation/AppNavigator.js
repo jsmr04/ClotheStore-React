@@ -2,7 +2,7 @@ import React from 'react'
 //Icons
 import { Ionicons } from '@expo/vector-icons'
 //Navigation
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, NavigationActions, StackActions } from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 
 //Screens
@@ -17,10 +17,6 @@ import theme from '../screens/theme'
 //TabOptions
 const tabBarOptions = {
   activeTintColor: theme.COLORS.PRIMARY,
-  style: {
-    padding: 10,
-    height: 50,
-  },
 }
 
 //Navigation settings
@@ -29,7 +25,7 @@ const appNavigator = createBottomTabNavigator(
     Home: {
       screen: HomeStackScreen,
       navigationOptions:{
-        tabBarLabel: 'Home',
+        tabBarLabel: () => {return null},
         tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'home-outline' } size = { 25 } color = { tintColor } />
@@ -39,7 +35,7 @@ const appNavigator = createBottomTabNavigator(
     Search: {
       screen: SearchStackScreen,
       navigationOptions:{
-        tabBarLabel: 'Search',
+        tabBarLabel: () => {return null},
         tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'search' } size = { 25 } color = { tintColor } />
@@ -49,7 +45,7 @@ const appNavigator = createBottomTabNavigator(
     Favorites: {
       screen: FavoriteStackScreen,
       navigationOptions:{
-        tabBarLabel: 'Favorites',
+        tabBarLabel: () => {return null},
         tabBarOptions: {
           activeTintColor: theme.COLORS.PRIMARY,
           tabBarOnPress: (scene, jumpToIndex) => {
@@ -64,7 +60,7 @@ const appNavigator = createBottomTabNavigator(
     Cart: {
       screen: CartStackScreen,
       navigationOptions:{
-        tabBarLabel: 'Cart',
+        tabBarLabel: () => {return null},
         tabBarOptions: tabBarOptions, 
         tabBarIcon: ({ tintColor }) => (
           <Ionicons name = { 'cart-outline' } size = { 25 } color = { tintColor } />

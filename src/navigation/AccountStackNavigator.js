@@ -1,14 +1,10 @@
 import * as React from 'react';
-import {StatusBar} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/store/Home';
-import SignScreen from '../screens/authentication/Signin';
 import AccountMenuScreen from '../screens/account/AccountMenu';
 import AccountDetailScreen from '../screens/account/AccountDetails'; 
 import AccountOrdersScreen from '../screens/account/AccountOrders'; 
 import AccountAddressScreen from '../screens/account/AccountAddress';
-import ItemDetailScreen from '../screens/store/ItemDetails'; 
 import theme from '../screens/theme';
 
 const Stack = createStackNavigator();
@@ -22,28 +18,13 @@ const MyTheme = {
     },
 };
 
-
 function App() {
-
-  return ( 
+  return (
     <NavigationContainer theme={MyTheme}>
-      <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
       <Stack.Navigator initialRouteName="home" mode="modal">
         <Stack.Screen 
         name="home" 
-        component={HomeScreen} 
-        />
-        <Stack.Screen 
-        name="item" 
-        component={ItemDetailScreen} 
-        options={theme.horizontalAnimation}
-        />
-        <Stack.Screen 
-        name="signin" 
-        component={AccountMenuScreen} 
-        options={{
-            title: 'Account',
-        }}
+        component={AccountMenuScreen}
         />
         <Stack.Screen 
         name="profile" 

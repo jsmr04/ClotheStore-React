@@ -86,7 +86,7 @@ export default ({navigation}) => {
           let newProducts = [];
           snapshot.forEach(function (childSnapshot) {
             newProducts.push(childSnapshot.val());
-            //console.log(childSnapshot.val());
+            console.log(childSnapshot.key);
             setLastDoc(parseInt(childSnapshot.child('id').val()) +1);
           })
           setProducts(newProducts);
@@ -110,6 +110,7 @@ export default ({navigation}) => {
             let newProducts = products;
             //console.log(snapshot)
             snapshot.forEach(function (childSnapshot) {
+              
               newProducts.push(childSnapshot.val());
               setLastDoc(childSnapshot.val())
             })
@@ -145,7 +146,6 @@ export default ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={theme.COLORS.PRIMARY}></StatusBar>
       { loading ? 
         <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
       : 
@@ -184,7 +184,7 @@ export default ({navigation}) => {
             onRefresh={onRefresh}
           />
         }
-        onEndReachedThreshold = {0}
+        onEndReachedThreshold = {0.1}
         onMomentumScrollBegin = {() => {onEndReachedCallDuringMomentum = false;}}
         onEndReached = {() => {
           if (!onEndReachedCallDuringMomentum && !isMoreLoading) {
