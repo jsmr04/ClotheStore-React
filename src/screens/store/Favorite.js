@@ -65,9 +65,11 @@ export default ({ navigation }) => {
   const addToCart = (item)=>{
     Storage.save({
         key: 'cart',
-        id: item.id,
+        id: item.id + '-' + 'XS',//TODO: Hardcoded size is temporal, it has to be replaced by actual item size
         data: {
-          item: item.id
+          item: item.id,
+          size: 'XS', //TODO: Hardcoded size is temporal, it has to be replaced by actual item size
+          quantity: 1//Default quantity
         },
       }).then(()=>{
         Toast.show({
