@@ -40,13 +40,6 @@ function App() {
         options={theme.horizontalAnimation}
         />
         <Stack.Screen 
-        name="account" 
-        component={AccountMenuScreen} 
-        options={{
-            title: 'Account',
-        }}
-        />
-        <Stack.Screen 
         name="signin" 
         component={SignScreen} 
         options={{
@@ -57,6 +50,13 @@ function App() {
         name="register" 
         component={RegisterScreen} 
         options={theme.horizontalAnimation}
+        />
+        <Stack.Screen 
+        name="account" 
+        component={AccountMenuScreen} 
+        options={{
+            title: 'Account',
+        }}
         />
         <Stack.Screen 
         name="registeraddress" 

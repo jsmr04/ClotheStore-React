@@ -103,7 +103,6 @@ export default ({navigation}) => {
   getMore = async () => {
     //alert("getMore")
     if(lastDoc){
-      
       setIsMoreLoading(true);
       //alert(lastDoc.id)
       productRef.orderByChild('id').startAt("00" + lastDoc.toString()).once("value", function (snapshot) {

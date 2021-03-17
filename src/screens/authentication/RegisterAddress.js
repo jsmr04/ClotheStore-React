@@ -4,6 +4,7 @@ import Input from "../../components/Input";
 import theme from '../theme';
 import FirebaseConfig from "../../backend/FirebaseConfig";
 import firebase from 'firebase'
+import Toast from 'react-native-toast-message';
 
 
 const { width, height } = Dimensions.get("screen");
@@ -14,14 +15,13 @@ export default ({ route, navigation }) => {
   const { user } = route.params;
   console.log(user)  
 
-  let [address, setAddress] = useState()
-  let [state, setState] = useState()
-  let [country, setCountry] = useState()
-  let [zip, setZip] = useState()
+  let [address, setAddress] = useState('')
+  let [state, setState] = useState('')
+  let [country, setCountry] = useState('')
+  let [zip, setZip] = useState('')
   
 
-  const saveData = async () => {
-
+  const saveData = () => {
     if (user.uid != undefined){
       database.database()
       .ref('/userInfo/' + user.uid)
@@ -55,15 +55,37 @@ export default ({ route, navigation }) => {
                 navigation.popToTop();
               })
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+              console.log(error.code)
+              if(error.code == 'auth/email-already-in-use') {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Attention! 👋',
+                  text2: 'Email is already been used !',
+                  position: 'bottom',
+                  topOffset: 60,
+                  bottomOffset: 80,
+                });
+              }
+            })
     }
     
   }
 
-  const checkEmpty = () => {
+  const validate = () => {
       if (address != '' && state != '' && country != '' && zip != ''){
+        console.log('not Empty')
         return true
       } else {
+        console.log('Empty')
+        Toast.show({
+          type: 'error',
+          text1: 'Attention! 👋',
+          text2: 'Fields can not be empty !',
+          position: 'bottom',
+          topOffset: 60,
+          bottomOffset: 80,
+        });
         return false
       }
   }
@@ -71,7 +93,6 @@ export default ({ route, navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: 'Delivery Address',
-      headerLeft: null,
     })
   });
 
@@ -99,12 +120,9 @@ export default ({ route, navigation }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} 
             onPress={() => {
-              if(checkEmpty()){
+              if(validate()){
                 saveData()
-              } else {
-                console.log('There are fields in blank')
-              }
-              
+              } 
             }}> 
             <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>

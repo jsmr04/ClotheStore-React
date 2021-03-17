@@ -16,7 +16,7 @@ import theme from "../theme";
 import Storage from "../../backend/LocalStorage";
 import { NavigationEvents } from "react-navigation";
 import Toast from 'react-native-toast-message';
-
+import firebase from 'firebase';
 
 
 const checkItemExists = (data, id) => {
@@ -26,6 +26,7 @@ const checkItemExists = (data, id) => {
 export default ({ navigation }) => {
   let { loading, data: products } = fetchData("product/");
   let [favoritesData, setFavoritesData] = useState([]);
+  let userRoute;
 
   //Load favorites
   const loadFavorites = (payload) => {
@@ -83,10 +84,11 @@ export default ({ navigation }) => {
   }, [products]);
 
   React.useLayoutEffect(() => {
+    checkAuth();
     navigation.setOptions({
       title: "ClotheStore",
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("signin")}>
+        <TouchableOpacity onPress={() => navigation.navigate(userRoute)}>
           <Ionicons
             name={"person"}
             size={25}
@@ -97,6 +99,16 @@ export default ({ navigation }) => {
       ),
     });
   }, [navigation]);
+
+  const checkAuth = () => {
+    firebase.auth().onAuthStateChanged(user => {
+        if(user){
+          userRoute = 'account'
+        }else {
+          userRoute = 'signin'
+        }
+    })
+  }
 
   const renderCard = (item) => {
     return (

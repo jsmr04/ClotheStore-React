@@ -16,6 +16,7 @@ import fetchData from "../../backend/FetchData";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
 import { Ionicons } from "@expo/vector-icons";
 import theme from "../theme";
+import firebase from 'firebase';
 
 const styles = StyleSheet.create({
   container: {
@@ -71,16 +72,20 @@ const styles = StyleSheet.create({
 export default ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
   const [classificationIndex, setClassificationIndex] = useState("0");
+
   const ref = useRef(null);
+  let userRoute;
+
   //Getting categories
   let { loading, data: categories } = fetchData("category/");
 
   //SettingUp the top Header style
   React.useLayoutEffect(() => {
+    checkAuth();
     navigation.setOptions({
       title: "ClotheStore",
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("signin")}>
+        <TouchableOpacity onPress={() => navigation.navigate(userRoute)}>
           <Ionicons
             name={"person"}
             size={25}
@@ -91,6 +96,16 @@ export default ({ navigation }) => {
       ),
     });
   }, [navigation]);
+
+  const checkAuth = () => {
+    firebase.auth().onAuthStateChanged(user => {
+        if(user){
+          userRoute = 'account'
+        }else {
+          userRoute = 'signin'
+        }
+    })
+  }
 
   //Options configuration
   const [tabOptions, setTabOptions] = useState([

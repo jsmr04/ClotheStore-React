@@ -6,10 +6,10 @@ import theme from '../theme';
 import * as Google from 'expo-google-app-auth';
 import FirebaseConfig from "../../backend/FirebaseConfig";
 import firebase from "firebase";
-
-const { width, height } = Dimensions.get("screen");
 import Toast from 'react-native-toast-message';
 
+
+const { width, height } = Dimensions.get("screen");
 
 export default ({navigation}) => {
 
@@ -32,12 +32,12 @@ export default ({navigation}) => {
     return false;
   }
 
-  const checkExists = (id) => {
+  const checkExists = async (id) => {
     console.log('checkExists')
-    var exist = false;
+    var exist;
     //console.log(email)
     database.database().ref('/userInfo/' + id)
-    .on('value', (snapshot) => {
+    .once('value', (snapshot) => {
       if(snapshot.empty){
         console.log('Dont exists')
         exist = false
@@ -120,10 +120,10 @@ export default ({navigation}) => {
       Toast.show({
         type: 'error',
         text1: 'Attention! 👋',
-        text2: 'One of the fields are empty !',
+        text2: 'Fields can not be empty !',
         position: 'bottom',
         topOffset: 60,
-        bottomOffset: 50,
+        bottomOffset: 80,
       });
     }
     
