@@ -2,13 +2,76 @@ import React, { useState, useLayoutEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, Keyboard, TouchableWithoutFeedback} from "react-native";
 import Input from "../../components/Input";
 import theme from '../theme';
+import FirebaseConfig from "../../backend/FirebaseConfig";
+import firebase from 'firebase'
+
 
 const { width, height } = Dimensions.get("screen");
 
-export default ({navigation}) => {
+export default ({ route, navigation }) => {
+
+  const database = FirebaseConfig();
+  const { user } = route.params;
+  console.log(user)  
+
+  let [address, setAddress] = useState()
+  let [state, setState] = useState()
+  let [country, setCountry] = useState()
+  let [zip, setZip] = useState()
+  
+
+  const saveData = async () => {
+
+    if (user.uid != undefined){
+      database.database()
+      .ref('/userInfo/' + user.uid)
+      .set({
+          email: user.email,
+          profilePicture: user.profilePicture,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          address: address,
+          state: state,
+          country: country,
+          zip: zip
+      }).then(function (snapshot){
+        navigation.popToTop();
+      })
+    } else {
+      firebase.auth()
+            .createUserWithEmailAndPassword(user.email, user.password)
+            .then((result) => {
+              database.database()
+              .ref('/userInfo/' + result.user.uid)
+              .set({
+                  email: user.email,
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  address: address,
+                  state: state,
+                  country: country,
+                  zip: zip
+              }).then(function (snapshot){
+                navigation.popToTop();
+              })
+            })
+            .catch(error => console.log(error))
+    }
+    
+  }
+
+  const checkEmpty = () => {
+      if (address != '' && state != '' && country != '' && zip != ''){
+        return true
+      } else {
+        return false
+      }
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: 'Delivery Address',
+      headerLeft: null,
     })
   });
 
@@ -26,15 +89,23 @@ export default ({navigation}) => {
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
             <View>
-            <Input icon="ios-location-sharp" placeholder="Address" keyboardType="default" textContentType="fullStreetAddress"/>
-            <Input icon="map" placeholder="Province" keyboardType="default" textContentType="addressState"/>
-            <Input icon="map" placeholder="Country" keyboardType="default" textContentType="countryName"/>
-            <Input icon="ios-location-sharp" placeholder="Postal Code" keyboardType="default" textContentType="postalCode"/>
+            <Input icon="ios-location-sharp" placeholder="Address" keyboardType="default" textContentType="fullStreetAddress" onChangeText={(address) => setAddress(address)}/>
+            <Input icon="map" placeholder="Province" keyboardType="default" textContentType="addressState" onChangeText={(state) => setState(state)}/>
+            <Input icon="map" placeholder="Country" keyboardType="default" textContentType="countryName" onChangeText={(country) => setCountry(country)}/>
+            <Input icon="ios-location-sharp" placeholder="Postal Code" keyboardType="default" textContentType="postalCode" onChangeText={(zip) => setZip(zip)}/>
             </View>
         </TouchableWithoutFeedback>
         
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}> 
+          <TouchableOpacity style={styles.button} 
+            onPress={() => {
+              if(checkEmpty()){
+                saveData()
+              } else {
+                console.log('There are fields in blank')
+              }
+              
+            }}> 
             <Text style={styles.text}>Create Account</Text>
           </TouchableOpacity>
         </View>
@@ -48,7 +119,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    marginVertical: 40,
   },
   mainContainer: {
     alignItems: "center",

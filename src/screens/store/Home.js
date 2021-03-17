@@ -66,12 +66,14 @@ export default ({navigation}) => {
   let [loading, setLoading] = useState(false);
   let [lastDoc, setLastDoc] = useState(null);
   let [isMoreLoading, setIsMoreLoading] = useState(false);
+  let userRoute;
 
   const onRefresh = () => {
     getProducts();
   };
 
   loadFavorites();
+  
 
   useEffect(() => {
     getProducts();
@@ -134,15 +136,26 @@ export default ({navigation}) => {
   }
 
   useLayoutEffect(() => {
+    checkAuth();
     navigation.setOptions({
       title: 'ClotheStore',
       headerRight: () => (
-          <TouchableOpacity onPress={() => navigation.navigate('signin')}>
+          <TouchableOpacity onPress={() => navigation.navigate(userRoute)}>
               <Ionicons name = { 'person' } size = { 25 } color={theme.COLORS.WHITE} style={{marginRight: 10}}/>  
           </TouchableOpacity>
       ),
     })
   }, [navigation]);
+
+  const checkAuth = () => {
+    firebase.auth().onAuthStateChanged(user => {
+        if(user){
+          userRoute = 'account'
+        }else {
+          userRoute = 'signin'
+        }
+    })
+  }
 
   return (
     <View style={styles.container}>

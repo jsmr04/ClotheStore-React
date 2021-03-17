@@ -6,11 +6,40 @@ import theme from "../theme";
 const { width, height } = Dimensions.get("screen");
 
 export default ({ navigation }) => {
+
+  let [fName, setFname] = useState('');
+  let [lName, setLname] = useState('');
+  let [email, setEmail] = useState('');
+  let [password, setPassword] = useState('');
+  let [confirmPassword, setConfirmPassword] = useState('');
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: "Personal Information",
     });
   });
+
+  const userInformation = () => {
+    const tmpData = {
+      firstName: fName,
+      lastName: lName,
+      email: email,
+      password: password,
+    }
+    return tmpData;
+  }
+
+  const checkPassword = () => {
+    if (password != '' && confirmPassword != '' && fName != '' && lName != '' && email != ''){
+      if (password === confirmPassword){
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -26,18 +55,21 @@ export default ({ navigation }) => {
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
           <View>
-            <Input icon="md-person" placeholder="First Name" keyboardType="default" textContentType="name"/>
-            <Input icon="md-person" placeholder="Last Name" keyboardType="default" textContentType="familyName"/>
-            <Input icon="md-mail" placeholder="Email" keyboardType="email-address" textContentType="emailAddress"/>
-            <Input icon="key" placeholder="Password" secureEntry={true} textContentType="newPassword"/>
-            <Input icon="key" placeholder="Confirm Password" secureEntry={true} textContentType="newPassword"/>
+            <Input icon="md-person" placeholder="First Name" keyboardType="default" textContentType="name" value={fName} onChangeText={fname => setFname(fname)}/>
+            <Input icon="md-person" placeholder="Last Name" keyboardType="default" textContentType="familyName" value={lName} onChangeText={lname => setLname(lname)}/>
+            <Input icon="md-mail" placeholder="Email" keyboardType="email-address" textContentType="emailAddress" value={email} onChangeText={email => setEmail(email)}/>
+            <Input icon="key" placeholder="Password" secureEntry={true} textContentType="newPassword" value={password} onChangeText={pass => setPassword(pass)}/>
+            <Input icon="key" placeholder="Confirm Password" secureEntry={true} textContentType="newPassword" value={confirmPassword} onChangeText={cpass => setConfirmPassword(cpass)}/>
           </View>
         </TouchableWithoutFeedback>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              navigation.navigate("registerAdress");
+          <TouchableOpacity style={styles.button} onPress={() => {
+              if(checkPassword()){
+                console.log('Not Wrong')
+                  navigation.navigate("registeraddress", {user: userInformation()});
+              } else {
+                console.log('Wrong')
+              }
             }}
           >
             <Text style={styles.text}>Next</Text>
@@ -52,8 +84,7 @@ export default ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    marginVertical: 40,
+    backgroundColor: theme.COLORS.WHITE,
   },
   mainContainer: {
     alignItems: "center",

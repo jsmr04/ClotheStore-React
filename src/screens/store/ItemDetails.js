@@ -1,7 +1,6 @@
 import React, {useCallback, useRef, useState, useEffect} from "react";
 import { ActivityIndicator, View, StyleSheet, Text, Dimensions, StatusBar, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import fetchData from "../../backend/FetchData";
 import Carousel, { ParallaxImage, Pagination  } from "react-native-snap-carousel";
 const { width: screenWidth } = Dimensions.get('window')
 import TabOptions from "../../components/TabOptions";

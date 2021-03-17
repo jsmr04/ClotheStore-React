@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/store/Home';
 import SignScreen from '../screens/authentication/Signin';
+import RegisterScreen from '../screens/authentication/Register'
+import RegisterAddressScreen from '../screens/authentication/RegisterAddress'
 import AccountMenuScreen from '../screens/account/AccountMenu';
 import AccountDetailScreen from '../screens/account/AccountDetails'; 
 import AccountOrdersScreen from '../screens/account/AccountOrders'; 
@@ -22,7 +24,6 @@ const MyTheme = {
     },
 };
 
-
 function App() {
 
   return ( 
@@ -39,11 +40,28 @@ function App() {
         options={theme.horizontalAnimation}
         />
         <Stack.Screen 
-        name="signin" 
+        name="account" 
         component={AccountMenuScreen} 
         options={{
             title: 'Account',
         }}
+        />
+        <Stack.Screen 
+        name="signin" 
+        component={SignScreen} 
+        options={{
+            title: 'Sign In',
+        }}
+        />
+        <Stack.Screen 
+        name="register" 
+        component={RegisterScreen} 
+        options={theme.horizontalAnimation}
+        />
+        <Stack.Screen 
+        name="registeraddress" 
+        component={RegisterAddressScreen} 
+        options={theme.horizontalAnimation}
         />
         <Stack.Screen 
         name="profile" 
