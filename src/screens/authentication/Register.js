@@ -2,6 +2,7 @@ import React, { useState, useLayoutEffect } from "react";
 import {StyleSheet, View, Text, Dimensions, TouchableOpacity, SafeAreaView, Keyboard, TouchableWithoutFeedback} from "react-native";
 import Input from "../../components/Input";
 import theme from "../theme";
+import Toast from 'react-native-toast-message';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -29,15 +30,42 @@ export default ({ navigation }) => {
     return tmpData;
   }
 
-  const checkPassword = () => {
+  const validate = () => {
     if (password != '' && confirmPassword != '' && fName != '' && lName != '' && email != ''){
-      if (password === confirmPassword){
-        return true;
+      if(password.length >5){
+        if (password === confirmPassword){
+          return true;
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Attention! 👋',
+            text2: 'Passwords must match !',
+            position: 'bottom',
+            topOffset: 60,
+            bottomOffset: 80,
+          });
+          return false;
+        }
       } else {
-        return false;
+        Toast.show({
+          type: 'error',
+          text1: 'Attention! 👋',
+          text2: 'Passwords must have at least 6 letters!',
+          position: 'bottom',
+          topOffset: 60,
+          bottomOffset: 80,
+        });
       }
     } else {
-      return false;
+      Toast.show({
+        type: 'error',
+        text1: 'Attention! 👋',
+        text2: 'Fields can not be empty !',
+        position: 'bottom',
+        topOffset: 60,
+        bottomOffset: 80,
+      });
+      return false;s
     }
   }
 
@@ -64,12 +92,9 @@ export default ({ navigation }) => {
         </TouchableWithoutFeedback>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => {
-              if(checkPassword()){
-                console.log('Not Wrong')
+              if(validate()){
                   navigation.navigate("registeraddress", {user: userInformation()});
-              } else {
-                console.log('Wrong')
-              }
+              } 
             }}
           >
             <Text style={styles.text}>Next</Text>

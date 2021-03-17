@@ -1,13 +1,23 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import theme from '../screens/theme';
+
+//Screens
 import SearchScreen from '../screens/store/Search'
+import SearchResultsScreen from '../screens/store/SearchResults'
+
 import SigninScreen from '../screens/authentication/Signin'
 import RegisterScreen from '../screens/authentication/Register'
 import RegisterAddressScreen from '../screens/authentication/RegisterAddress'
-import SearchResultsScreen from '../screens/store/SearchResults'
+
+import AccountMenuScreen from '../screens/account/AccountMenu';
+import AccountDetailScreen from '../screens/account/AccountDetails'; 
+import AccountOrdersScreen from '../screens/account/AccountOrders'; 
+import AccountAddressScreen from '../screens/account/AccountAddress';
+
 import ItemDetails from '../screens/store/ItemDetails'
-import theme from '../screens/theme';
+
 
 const Stack = createStackNavigator();
 
@@ -55,6 +65,28 @@ function App() {
         <Stack.Screen 
         name="item" 
         component={ItemDetails} 
+        options={theme.horizontalAnimation}
+        />
+        <Stack.Screen 
+        name="account" 
+        component={AccountMenuScreen} 
+        options={{
+            title: 'Account',
+        }}
+        />
+        <Stack.Screen 
+        name="profile" 
+        component={AccountDetailScreen} 
+        options={theme.horizontalAnimation}
+        />
+        <Stack.Screen 
+        name="address" 
+        component={AccountAddressScreen} 
+        options={theme.horizontalAnimation}
+        />
+        <Stack.Screen 
+        name="orders" 
+        component={AccountOrdersScreen} 
         options={theme.horizontalAnimation}
         />
       </Stack.Navigator>

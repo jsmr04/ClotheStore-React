@@ -17,8 +17,10 @@ import Util from "../../helpers/Util";
 import theme from "../theme";
 import Storage from "../../backend/LocalStorage";
 import { NavigationEvents } from "react-navigation";
-import Toast from "react-native-toast-message";
 import TabOptions from "../../components/TabOptions";
+import Toast from 'react-native-toast-message';
+import firebase from 'firebase';
+
 
 const checkItemExists = (data, id) => {
   return data.find((x) => x === id);
@@ -55,6 +57,7 @@ export default ({ navigation }) => {
     });
     setTabOptions(newTabOptions);
   };
+  let userRoute;
 
   //Assign function
   useEffect(() => {
@@ -162,10 +165,11 @@ export default ({ navigation }) => {
 
   /** HEADER */
   React.useLayoutEffect(() => {
+    checkAuth();
     navigation.setOptions({
       title: "ClotheStore",
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("signin")}>
+        <TouchableOpacity onPress={() => navigation.navigate(userRoute)}>
           <Ionicons
             name={"person"}
             size={25}
@@ -177,6 +181,16 @@ export default ({ navigation }) => {
     });
   }, [navigation]);
   /** END HEADER */
+
+  const checkAuth = () => {
+    firebase.auth().onAuthStateChanged(user => {
+        if(user){
+          userRoute = 'account'
+        }else {
+          userRoute = 'signin'
+        }
+    })
+  }
 
   const renderCard = (item) => {
     return (
