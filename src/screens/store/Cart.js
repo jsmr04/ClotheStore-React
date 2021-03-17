@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
   FlatList,
   Image,
   TouchableOpacity,
@@ -137,6 +136,12 @@ export default ({ navigation }) => {
       showCart();
     }
   };
+
+  // useEffect(()=>{
+  //   Storage.clearMapForKey("cart")
+  // },[])
+
+  //clearMapForKey
 
   const showCart = () => {
     let cartProducts = [];
@@ -280,7 +285,7 @@ export default ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           data={cartData}
           renderItem={({ item }) => renderCard(item)}
-          keyExtractor={(x) => `${x.id}`}
+          keyExtractor={(x) => `${x.key}`}
         />
     </View>
   );
