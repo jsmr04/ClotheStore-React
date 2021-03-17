@@ -1,8 +1,8 @@
 import React, {useLayoutEffect} from 'react';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import theme from "../theme";
-
+TextInput.defaultProps.selectionColor = theme.COLORS.PRIMARY;
 
 export default ({navigation}) => {
     useLayoutEffect(() => {
@@ -12,15 +12,19 @@ export default ({navigation}) => {
     });
     return (
         <View style = { styles.container }>
-            <View>
-                <Text>Delivery Address</Text>
-            </View>
-            <View style={styles.detailsContainer}>
-                <TextInput style={styles.input} placeholder="Address"></TextInput>
-                <TextInput style={styles.input} placeholder="Province/State"></TextInput>
-                <TextInput style={styles.input} placeholder="Country"></TextInput>
-                <TextInput style={styles.input} placeholder="Postal Code"></TextInput>
-            </View>
+            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+                <View style={styles.topHeader}>
+                    <Text style={styles.textHeader}>Delivery Address</Text>
+                </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+                <View style={styles.detailsContainer}>
+                    <TextInput style={styles.input} placeholder="Address" ></TextInput>
+                    <TextInput style={styles.input} placeholder="Province/State" ></TextInput>
+                    <TextInput style={styles.input} placeholder="Country" ></TextInput>
+                    <TextInput style={styles.input} placeholder="Postal Code" ></TextInput>
+                </View>
+            </TouchableWithoutFeedback>
             <TouchableOpacity style={styles.save} >
                 <Text style={styles.saveText}>Save</Text>
             </TouchableOpacity>
@@ -36,7 +40,14 @@ const styles = StyleSheet.create({
         
     },
     topHeader: {
-
+        margin: 60,
+        alignItems:'center',
+    },
+    textHeader: {
+        fontSize: 25,
+        textAlign: 'center',
+        alignSelf: 'center',
+        textTransform: "uppercase",
     },
     detailsContainer: {
         flex:4,

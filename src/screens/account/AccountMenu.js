@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import theme from "../theme";
+import firebase from 'firebase';
 
 export default ({navigation}) => {
     return (
@@ -21,7 +22,15 @@ export default ({navigation}) => {
                 <Ionicons name = { 'md-chevron-forward' } size = { 25 } color={theme.COLORS.PRIMARY} style={styles.icon}/>  
             </TouchableOpacity>
             <View style={styles.separator}></View>
-            <TouchableOpacity style={styles.signOut} >
+            <TouchableOpacity style={styles.signOut} onPress={() => {
+                firebase.auth().signOut().then(() => {
+                    // Sign-out successful.
+                    console.log('Sign Out success')
+                    navigation.goBack();
+                  }).catch((error) => {
+                    // An error happened.
+                  });
+            }}>
                 <Text style={styles.signOutText}>Sign Out</Text>
             </TouchableOpacity>
         </View>

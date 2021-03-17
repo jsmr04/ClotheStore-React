@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, Dimensions} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
+import theme from "../screens/theme";
 const { width, height } = Dimensions.get("screen");
+TextInput.defaultProps.selectionColor = theme.COLORS.PRIMARY;
 
-const Input = ({ icon, size, placeholder, onChangeText, keyboardType, secureEntry, textContentType }) => {
+const Input = ({ icon, size, placeholder, onChangeText, keyboardType, secureEntry, textContentType, value }) => {
   const [inFocus, setInFocus] = useState(false);
 
   return (
@@ -27,6 +28,7 @@ const Input = ({ icon, size, placeholder, onChangeText, keyboardType, secureEntr
           placeholder={placeholder}
           placeholderTextColor="#555"
           onChangeText={onChangeText}
+          value={value}
         />
       </View>
     </View>

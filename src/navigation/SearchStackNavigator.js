@@ -41,7 +41,7 @@ function App() {
         options={theme.horizontalAnimation}
         />
         <Stack.Screen 
-        name="registerAdress" 
+        name="registeraddress" 
         component={RegisterAddressScreen} 
         options={theme.horizontalAnimation}
         />

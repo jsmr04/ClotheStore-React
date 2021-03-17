@@ -68,7 +68,7 @@ const appNavigator = createBottomTabNavigator(
       }
     },
   },
-  { initialRouteName: 'Home' }, {tabStyle: {backgroundColor: theme.COLORS.PRIMARY}}
+  { initialRouteName: 'Home' }
 );
 
 //Export  navigator

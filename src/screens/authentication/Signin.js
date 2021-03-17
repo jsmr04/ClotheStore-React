@@ -1,14 +1,142 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import {StyleSheet, View, Dimensions, SafeAreaView, Text, TouchableOpacity, Keyboard,  TouchableWithoutFeedback} from "react-native";
 import Input from "../../components/Input";
 import theme from '../theme';
+import * as Google from 'expo-google-app-auth';
+import FirebaseConfig from "../../backend/FirebaseConfig";
+import firebase from "firebase";
 
 const { width, height } = Dimensions.get("screen");
+import Toast from 'react-native-toast-message';
 
 
 export default ({navigation}) => {
+
+  let database = FirebaseConfig();
   const [isSelected, setSelection] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const isUserEqual = (googleUser, firebaseUser) => {
+    if (firebaseUser) {
+      var providerData = firebaseUser.providerData;
+      for (var i = 0; i < providerData.length; i++) {
+        if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+            providerData[i].uid === googleUser.getBasicProfile().getId()) {
+          // We don't need to reauth the Firebase connection.
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  const checkExists = (id) => {
+    console.log('checkExists')
+    var exist = false;
+    //console.log(email)
+    database.database().ref('/userInfo/' + id)
+    .on('value', (snapshot) => {
+      if(snapshot.empty){
+        console.log('Dont exists')
+        exist = false
+      }else {
+        console.log('exists')
+        exist = true
+      }
+    });
+    return exist;
+  }
+
+  const onSignIn = (googleUser) => {
+
+    console.log('Google Auth Response', googleUser.user.email);
+    // We need to register an Observer on Firebase Auth to make sure auth is initialized.
+    var unsubscribe = firebase.auth().onAuthStateChanged((firebaseUser) => {
+      unsubscribe();
+      // Check if we are already signed-in Firebase with the correct user.
+      if (!isUserEqual(googleUser, firebaseUser)) {
+        // Build Firebase credential with the Google ID token.
+        var credential = firebase.auth.GoogleAuthProvider.credential( googleUser.idToken, googleUser.accessToken);
+        // Sign in with credential from the Google user.
+        //console.log(credential)
+        firebase.auth().signInWithCredential(credential).then(function(result){
+          if(checkExists(result.user.uid)){
+            console.log('exists')
+            navigation.navigate('home');
+          } else {
+            let tmpData = {
+              uid: result.user.uid,
+              email: result.additionalUserInfo.profile.email,
+              profilePicture: result.additionalUserInfo.profile.picture,
+              firstName: result.additionalUserInfo.profile.given_name,
+              lastName: result.additionalUserInfo.profile.family_name,
+            }
+            navigation.navigate('registeraddress', {user: tmpData});
+          }  
+        }).catch((error) => {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // ...
+        });
+      } else {
+        console.log('User already signed-in Firebase.');
+      }
+    });
+  }
+
+  const signInWithGoogleAsync = async () => {
+    try {
+      const result = await Google.logInAsync({
+        androidClientId: '521700687251-ibr2frei8m4qt676cbacitvtuclrk290.apps.googleusercontent.com',
+        iosClientId: '521700687251-ddk861rstv5dia1t3k4boggkj3b18mnm.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+      });
+  
+      if (result.type === 'success') {
+        onSignIn(result)
+        return result.accessToken;
+      } else {
+        return { cancelled: true };
+      }
+    } catch (e) {
+      return { error: true };
+    }
+  }
+
+  const checklogin = () => {
+    if(email != '' && password != ''){
+      firebase.auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => navigation.popToTop())
+      .catch(error => console.log(error))
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Attention! 👋',
+        text2: 'One of the fields are empty !',
+        position: 'bottom',
+        topOffset: 60,
+        bottomOffset: 50,
+      });
+    }
+    
+  }
+  
+
+  // const checkAuth = () => {
+  //   firebase.auth().onAuthStateChanged(user => {
+  //       if(user){
+  //         navigation.goBack();
+  //       }
+  //   })
+  // }
 
   return (
     <View style={styles.container}>
@@ -24,8 +152,8 @@ export default ({navigation}) => {
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
           <View>
-            <Input icon="md-mail" placeholder="Email" keyboardType="email-address" textContentType="emailAddress"/> 
-            <Input icon="key" placeholder="Password" secureEntry={true} textContentType="password"/>
+            <Input icon="md-mail" placeholder="Email" keyboardType="email-address" textContentType="emailAddress" value={email} onChangeText={email => setEmail(email)}/> 
+            <Input icon="key" placeholder="Password" secureEntry={true} textContentType="password" value={password} onChangeText={pass => setPassword(pass)}/>
             <BouncyCheckbox
             textDecoration={true}
             isChecked={false}
@@ -40,8 +168,12 @@ export default ({navigation}) => {
           </View>
         </TouchableWithoutFeedback>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}> 
+          <TouchableOpacity style={styles.button} onPress={() => checklogin()}> 
             <Text style={styles.text}>Sign In</Text>
+          </TouchableOpacity>
+          <View style={{margin: 5}}></View>
+          <TouchableOpacity style={styles.button} onPress={() => signInWithGoogleAsync()}> 
+            <Text style={styles.text}>Sign In with Google</Text>
           </TouchableOpacity>
         </View>
         <Text>Don't have an account?</Text>
