@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import CartScreen from '../screens/store/Cart'
 import SignScreen from '../screens/authentication/Signin'
+import CheckoutScreen from '../screens/store/Checkout'
 import theme from '../screens/theme';
 
 const Stack = createStackNavigator();
@@ -29,6 +30,13 @@ function App() {
         component={SignScreen} 
         options={{
             title: 'Sign In',
+        }}
+        />
+        <Stack.Screen 
+        name="checkout" 
+        component={CheckoutScreen} 
+        options={{
+            title: 'Checkout',
         }}
         />
       </Stack.Navigator>

@@ -31,7 +31,5 @@ export default (path) => {
     });
   };
 
-//   console.log('DATA')
-//   console.log(data)
   return { loading, data };
 };
