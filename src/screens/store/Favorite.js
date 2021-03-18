@@ -18,9 +18,9 @@ import theme from "../theme";
 import Storage from "../../backend/LocalStorage";
 import { NavigationEvents } from "react-navigation";
 import TabOptions from "../../components/TabOptions";
-import Toast from 'react-native-toast-message';
-import firebase from 'firebase';
-
+import Toast from "react-native-toast-message";
+import firebase from "firebase";
+import CustomModal from "../../components/CustomModal";
 
 const checkItemExists = (data, id) => {
   return data.find((x) => x === id);
@@ -31,9 +31,9 @@ export default ({ navigation }) => {
   let [favoritesData, setFavoritesData] = useState([]);
   let [modalVisibility, setModalVisibility] = useState(false);
   let [selectedItem, setSelectedItem] = useState({});
- 
-  /* SIZE CONFIGURATION */ 
-  //Options 
+
+  /* SIZE CONFIGURATION */
+  //Options
   const [tabOptions, setTabOptions] = useState([
     { key: 0, name: "XS", checked: false, onPress: () => {}, disable: true },
     { key: 1, name: "S", checked: false, onPress: () => {}, disable: true },
@@ -70,9 +70,9 @@ export default ({ navigation }) => {
 
     setTabOptions(newTabOptions);
   }, []);
-  /* END SIZE CONFIGURATION */ 
+  /* END SIZE CONFIGURATION */
 
-   /* FAVORITES */ 
+  /* FAVORITES */
   const loadFavorites = (payload) => {
     if (payload && payload.action.routeName === "Favorites") {
       showFavorites();
@@ -106,25 +106,23 @@ export default ({ navigation }) => {
     showFavorites();
   }, [products]);
 
-  /* END FAVORITES */ 
+  /* END FAVORITES */
 
   /* CART */
   const addToCart = () => {
-    let selectedSize = tabOptions.filter(x => x.checked)[0].name
-    console.log('- NEW CART ITEM -')
-    console.log(selectedItem.id + "-" + selectedSize)
+    let selectedSize = tabOptions.filter((x) => x.checked)[0].name;
+    console.log("- NEW CART ITEM -");
+    console.log(selectedItem.id + "-" + selectedSize);
 
-    if (selectedSize){
+    if (selectedSize) {
       Storage.save({
         key: "cart",
-        id: selectedItem.id + "-" + selectedSize, 
+        id: selectedItem.id + "-" + selectedSize,
         data: {
           item: selectedItem.id,
           size: selectedSize,
           quantity: 1, //Default quantity
         },
-
-        
       }).then(() => {
         Toast.show({
           text1: "Hello there! 👋",
@@ -133,12 +131,15 @@ export default ({ navigation }) => {
       });
     }
 
-    setModalVisibility(false)
-    
+    setModalVisibility(false);
+  };
+
+  const hideModal = () => {
+    setModalVisibility(false);
   };
   /** END CART*/
 
-  /* MODAL */ 
+  /* MODAL */
   const showModal = (item) => {
     let newSizes = [];
 
@@ -159,7 +160,7 @@ export default ({ navigation }) => {
     setModalVisibility(true);
 
     //Selected item
-    setSelectedItem(item)
+    setSelectedItem(item);
   };
   /** END MODAL */
 
@@ -183,14 +184,14 @@ export default ({ navigation }) => {
   /** END HEADER */
 
   const checkAuth = () => {
-    firebase.auth().onAuthStateChanged(user => {
-        if(user){
-          userRoute = 'account'
-        }else {
-          userRoute = 'signin'
-        }
-    })
-  }
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        userRoute = "account";
+      } else {
+        userRoute = "signin";
+      }
+    });
+  };
 
   const renderCard = (item) => {
     return (
@@ -256,35 +257,15 @@ export default ({ navigation }) => {
         />
       ) : (
         <>
-          <Modal
-            visible={modalVisibility}
-            animationType={"slide"}
-            transparent={true}
-          >
-            <View style={styles.modalCenteredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalTitle}>
-                  SIZE
-                </Text>
-                <TabOptions
-                  options={tabOptions}
-                  highlightColor={theme.COLORS.PRIMARY}
-                  titleColor={theme.COLORS.TITLE}
-                  activeColor={theme.COLORS.BLACK}
-                />
-                <View style={styles.modalButton}>
-                  <Button
-                    title="CANCEL"
-                    onPress={() => setModalVisibility(false)}
-                  />
-                  <Button
-                    title="SAVE"
-                    onPress={() => addToCart()}
-                  />
-                </View>
-              </View>
-            </View>
-          </Modal>
+          <CustomModal title={'SIZE'} visible={modalVisibility} onCancel={() => hideModal()} onSave={() => addToCart()} >
+            <TabOptions
+              options={tabOptions}
+              highlightColor={theme.COLORS.PRIMARY}
+              titleColor={theme.COLORS.TITLE}
+              activeColor={theme.COLORS.BLACK}
+            />
+          </CustomModal>
+
           <View>
             <Text
               style={styles.textResults}
@@ -388,37 +369,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     flex: 10,
   },
-  modalCenteredView: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    marginTop: 22,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle:{
-    fontSize: 22,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  modalButton:{
+  
+  modalButton: {
     flexDirection: "row",
     width: "80%",
     justifyContent: "space-around",
-  }
+  },
 });

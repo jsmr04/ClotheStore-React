@@ -7,6 +7,8 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Button,
+  ScrollView,
 } from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import theme from "../theme";
@@ -14,6 +16,8 @@ import fetchData from "../../backend/FetchData";
 import { NavigationEvents } from "react-navigation";
 import Storage from "../../backend/LocalStorage";
 import Util from "../../helpers/Util";
+import CustomModal from "../../components/CustomModal";
+import TabOptions from "../../components/TabOptions";
 
 const styles = StyleSheet.create({
   container: {
@@ -130,6 +134,33 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
   },
+  list:{
+
+  },
+  button: {
+    height: 47,
+    borderRadius: 3,
+    flexDirection: 'row',
+    alignItems:'center',
+    marginHorizontal:10,
+  },
+  buttonCart: {
+    backgroundColor: theme.COLORS.WHITE,
+    borderWidth: 1,
+    borderColor: theme.COLORS.PRIMARY
+  },
+  checkoutBuy: {
+    borderWidth: 1,
+    borderColor: theme.COLORS.PRIMARY,
+    backgroundColor: theme.COLORS.PRIMARY,
+  },
+  buttonText:{
+    paddingLeft:10,
+    flex:1,
+    fontSize: 20,
+    textAlignVertical: 'center',
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+  },
 });
 
 const SHIPPING_FEE = 9.99;
@@ -140,6 +171,33 @@ export default ({ navigation }) => {
   let [cartData, setCartData] = useState([]);
   let [taxAmount, setTaxAmount] = useState(0);
   let [totalAmount, setTotalAmount] = useState(0);
+  let [qtyVisibility, setQtyVisibility] = useState(false);
+  let [sizelVisibility, setSizeVisibility] = useState(false);
+  let [selectedItem, setSelectedItem] = useState({});
+
+  //Options - size
+  const [tabSizeOptions, setTabSizeOptions] = useState([
+    { key: 0, name: "XS", checked: false, onPress: () => {}, disable: true },
+    { key: 1, name: "S", checked: false, onPress: () => {}, disable: true },
+    { key: 2, name: "M", checked: false, onPress: () => {}, disable: true },
+    { key: 3, name: "L", checked: false, onPress: () => {}, disable: true },
+    { key: 4, name: "XL", checked: false, onPress: () => {}, disable: true },
+    { key: 5, name: "2XL", checked: false, onPress: () => {}, disable: true },
+  ]);
+
+  //Options - quantity
+  const [tabQtyOptions, setTabQtyOptions] = useState([
+    { key: 0, name: "1", checked: false, onPress: () => {}, disable: false },
+    { key: 1, name: "2", checked: false, onPress: () => {}, disable: false },
+    { key: 2, name: "3", checked: false, onPress: () => {}, disable: false },
+    { key: 3, name: "4", checked: false, onPress: () => {}, disable: false },
+    { key: 4, name: "5", checked: false, onPress: () => {}, disable: false },
+    { key: 5, name: "6", checked: false, onPress: () => {}, disable: false },
+    { key: 6, name: "7", checked: false, onPress: () => {}, disable: false },
+    { key: 7, name: "8", checked: false, onPress: () => {}, disable: false },
+    { key: 8, name: "9", checked: false, onPress: () => {}, disable: false },
+    { key: 9, name: "10", checked: false, onPress: () => {}, disable: false },
+  ]);
 
   const checkItemExists = (data, id) => {
     return data.find((x) => x.item === id);
@@ -152,7 +210,7 @@ export default ({ navigation }) => {
     }
   };
 
-  const showCart = () => {
+  const showCart = (type) => {
     let cartProducts = [];
 
     if (products.length > 0) {
@@ -171,6 +229,7 @@ export default ({ navigation }) => {
             price: product.price,
             pictures: product.pictures,
             name: product.name,
+            sizes: product.size,
           });
         });
         console.log("- cartProducts -");
@@ -211,7 +270,7 @@ export default ({ navigation }) => {
           return sum;
         }, 0) + SHIPPING_FEE
       );
-    }else{
+    } else {
       setTaxAmount(0);
       setTotalAmount(0);
     }
@@ -224,7 +283,160 @@ export default ({ navigation }) => {
 
   useEffect(() => {
     showCart();
+    //Storage.clearMapForKey('cart')
   }, [products]);
+
+  /** MODAL */
+  const showSizeModal = (item) => {
+    let newSizes = [];
+
+    tabSizeOptions.forEach((x) => {
+      let size = x;
+      //Disable size
+      if (item.sizes.filter((s) => s == size.name).length > 0) {
+        size.disable = false;
+      } else {
+        size.disable = true;
+      }
+
+      //Check size
+      if (size.name === item.size) {
+        size.checked = true;
+      } else {
+        size.checked = false;
+      }
+
+      newSizes.push(size);
+    });
+
+    console.log("- newSizes -");
+    console.log(newSizes);
+
+    setTabSizeOptions(newSizes);
+    setSizeVisibility(true);
+
+    //Selected item
+    setSelectedItem(item);
+  };
+
+  const showQtyModal = (item) => {
+    let newQuantities = [];
+    console.log(item)
+
+    tabQtyOptions.forEach((x) => {
+      let qty = x;
+      //Check qty
+      if (qty.name === item.quantity) {
+        qty.checked = true;
+      } else {
+        qty.checked = false;
+      }
+
+      newQuantities.push(qty);
+    });
+
+    setQtyVisibility(true);
+
+    //Selected item
+    setSelectedItem(item);
+  };
+
+  //Check option onPreess event
+  const checkSizeOption = (key) => {
+    let newTabOptions = [];
+
+    tabSizeOptions.forEach((x) => {
+      if (x.key == key) {
+        x.checked = true;
+      } else {
+        x.checked = false;
+      }
+      newTabOptions.push(x);
+    });
+    setTabSizeOptions(newTabOptions);
+  };
+
+  const checkQtyOption = (key) => {
+    let newTabOptions = [];
+
+    console.log("checkQtyOption " + key);
+
+    tabQtyOptions.forEach((x) => {
+      if (x.key == key) {
+        x.checked = true;
+      } else {
+        x.checked = false;
+      }
+      newTabOptions.push(x);
+    });
+    setTabQtyOptions(newTabOptions);
+  };
+
+  //Assign function
+  useEffect(() => {
+    //Sizes
+    let newTabOptions = [];
+    tabSizeOptions.forEach((x) => {
+      //onPress function
+      x.onPress = checkSizeOption;
+      newTabOptions.push(x);
+    });
+
+    setTabSizeOptions(newTabOptions);
+
+    //Quantities
+    let newTabOptions2 = [];
+    tabQtyOptions.forEach((x) => {
+      console.log("tabQtyOptions ");
+      console.log(x);
+      //onPress function
+      x.onPress = checkQtyOption;
+      newTabOptions2.push(x);
+    });
+
+    setTabQtyOptions(newTabOptions2);
+  }, []);
+
+  const updateCart = (type) => {
+    if (type === "size") {
+      let selectedSize = tabSizeOptions.filter((x) => x.checked)[0].name;
+      console.log("- NEW CART ITEM -");
+      console.log(selectedItem.id + "-" + selectedSize);
+      console.log(selectedItem);
+
+      //First, remove the current item from cart
+      Storage.remove({ key: "cart", id: selectedItem.key }).then(() => {
+        Storage.save({
+          key: "cart",
+          id: selectedItem.id + "-" + selectedSize,
+          data: {
+            item: selectedItem.id,
+            size: selectedSize,
+            quantity: selectedItem.quantity, //Default quantity
+          },
+        }).then(() => {
+          console.log("Item updated");
+          setSizeVisibility(false);
+          showCart();
+        });
+      });
+    } else {
+      let selectedQty = tabQtyOptions.filter((x) => x.checked)[0].name;
+      Storage.save({
+        key: "cart",
+        id: selectedItem.key,
+        data: {
+          item: selectedItem.id,
+          size: selectedItem.size,
+          quantity: selectedQty, //New quantity
+        },
+      }).then(() => {
+        console.log("Item updated");
+        setQtyVisibility(false);
+        showCart();
+      });
+    }
+  };
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -269,13 +481,13 @@ export default ({ navigation }) => {
           <View
             style={{ flexDirection: "row", justifyContent: "space-evenly" }}
           >
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => showQtyModal(item)}>
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.textCard}>Qty:</Text>
                 <Text style={styles.textCard}>{item.quantity}</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => showSizeModal(item)}>
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.textCard}>Size:</Text>
                 <Text style={styles.textCard}>{item.size}</Text>
@@ -323,10 +535,53 @@ export default ({ navigation }) => {
       <FlatList
         vertical
         showsVerticalScrollIndicator={false}
+        style = {styles.list}
         data={cartData}
         renderItem={({ item }) => renderCard(item)}
         keyExtractor={(x) => `${x.key}`}
       />
+
+      <View style={{ marginTop: 10, height:60 }}>
+        <TouchableOpacity onPress={()=> navigation.navigate('checkout', {cartData: cartData})} style={[styles.button, styles.checkoutBuy]}>
+          <Text style={[styles.buttonText, { color: theme.COLORS.WHITE }]}>
+            <Ionicons
+              name={"arrow-forward"}
+              color={theme.COLORS.WHITE}
+              style={styles.buttonIcon}
+            />
+            Go to Checkout
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <CustomModal
+        title={"SIZE"}
+        visible={sizelVisibility}
+        onCancel={() => setSizeVisibility(false)}
+        onSave={() => updateCart("size")}
+      >
+        <TabOptions
+          options={tabSizeOptions}
+          highlightColor={theme.COLORS.PRIMARY}
+          titleColor={theme.COLORS.TITLE}
+          activeColor={theme.COLORS.BLACK}
+        />
+      </CustomModal>
+
+      <CustomModal
+        title={"QUANTITY"}
+        visible={qtyVisibility}
+        onCancel={() => setQtyVisibility(false)}
+        onSave={() => updateCart("quantity")}
+      >
+        {/* TODO: Implement pagination for quantities */}
+        <TabOptions
+          options={tabQtyOptions}
+          highlightColor={theme.COLORS.PRIMARY}
+          titleColor={theme.COLORS.TITLE}
+          activeColor={theme.COLORS.BLACK}
+        />
+      </CustomModal>
     </View>
   );
 };
