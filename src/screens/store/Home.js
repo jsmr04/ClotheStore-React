@@ -8,6 +8,7 @@ import Block from "../../components/Block";
 import theme from "../theme";
 import Util from "../../helpers/Util"
 import Storage from "../../backend/LocalStorage";
+import { NavigationEvents } from "react-navigation";
 
 //Screen Style
 const styles = StyleSheet.create({
@@ -36,29 +37,11 @@ const styles = StyleSheet.create({
   }
 });
 
-let arrayFavorites = []
-
-function loadFavorites() {
-  Storage.getIdsForKey('favorite')
-  .then(favorites => {
-    arrayFavorites = favorites
-  })
-}
-
-function checkfavorites(itemId){
-  var icon = "heart-outline"
-  arrayFavorites.forEach(i =>{
-    if(i == itemId){
-      icon = "heart"
-    } 
-  })
-  return icon;
-}
-
 //Screen
 export default ({navigation}) => {
   const firebase = FirebaseConfig();
   const productRef = firebase.database().ref('/product');
+  const [arrayFavorites, setArrayFavorites] = useState([])
 
   let onEndReachedCallDuringMomentum = false;
 
@@ -72,11 +55,29 @@ export default ({navigation}) => {
     getProducts();
   };
 
-  loadFavorites();
+  function loadFavorites() {
+    console.log('loadFavorites')
+    Storage.getIdsForKey('favorite')
+    .then(favorites => {
+      setArrayFavorites(favorites)
+      setLoading(false)
+    })
+  }
   
+  function checkfavorites(itemId){
+    console.log('checkfavorites')
+    var icon = "heart-outline"
+    arrayFavorites.forEach(i =>{
+      if(i == itemId){
+        icon = "heart"
+      } 
+    })
+    return icon;
+  }
 
   useEffect(() => {
     getProducts();
+    loadFavorites();
   }, []);
 
   getProducts = () => {
@@ -156,8 +157,16 @@ export default ({navigation}) => {
     })
   }
 
+  const reloadData = (payload)=>{
+    if (payload && payload.action.routeName === "Home") {
+      setLoading(true);
+      loadFavorites();
+    }
+  }
+
   return (
     <View style={styles.container}>
+      <NavigationEvents onDidFocus={(payload) => reloadData(payload)} />
       { loading ? 
         <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  
       : 
