@@ -14,7 +14,7 @@ export default (path) => {
     //Init Firebase
     const firebase = FirebaseConfig();
     //Database
-    const productRef = firebase.database().ref(path).limitToFirst(5);
+    const productRef = firebase.database().ref(path);
     //Storage
     const storageRef = firebase.storage().ref('pictures'); 
 

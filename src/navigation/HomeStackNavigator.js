@@ -10,6 +10,7 @@ import AccountMenuScreen from '../screens/account/AccountMenu';
 import AccountDetailScreen from '../screens/account/AccountDetails'; 
 import AccountOrdersScreen from '../screens/account/AccountOrders'; 
 import AccountAddressScreen from '../screens/account/AccountAddress';
+import AccountOrdersViewScreen from '../screens/account/AccountOrdersView';
 import ItemDetailScreen from '../screens/store/ItemDetails'; 
 import theme from '../screens/theme';
 
@@ -76,6 +77,11 @@ function App() {
         <Stack.Screen 
         name="orders" 
         component={AccountOrdersScreen} 
+        options={theme.horizontalAnimation}
+        />
+        <Stack.Screen 
+        name="ordersview" 
+        component={AccountOrdersViewScreen} 
         options={theme.horizontalAnimation}
         />
       </Stack.Navigator>

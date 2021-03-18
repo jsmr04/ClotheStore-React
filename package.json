@@ -20,6 +20,7 @@
     "firebase": "7.9.0",
     "galio-framework": "^0.7.1",
     "intl": "^1.2.5",
+    "moment": "^2.29.1",
     "npm": "^7.6.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
