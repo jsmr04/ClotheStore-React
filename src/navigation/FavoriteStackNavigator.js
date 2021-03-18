@@ -38,6 +38,11 @@ function App() {
         component={FavoriteScreen} 
         />
         <Stack.Screen 
+        name="item" 
+        component={ItemDetailScreen} 
+        options={theme.horizontalAnimation}
+        />
+        <Stack.Screen 
         name="signin" 
         component={SigninScreen} 
         options={{
@@ -52,11 +57,6 @@ function App() {
         <Stack.Screen 
         name="registeraddress" 
         component={RegisterAddressScreen} 
-        options={theme.horizontalAnimation}
-        />
-        <Stack.Screen 
-        name="item" 
-        component={ItemDetailScreen} 
         options={theme.horizontalAnimation}
         />
          <Stack.Screen 

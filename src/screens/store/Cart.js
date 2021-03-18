@@ -18,150 +18,9 @@ import Storage from "../../backend/LocalStorage";
 import Util from "../../helpers/Util";
 import CustomModal from "../../components/CustomModal";
 import TabOptions from "../../components/TabOptions";
+import firebase from "firebase";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignContent: "center",
-  },
-  headerContainer: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderBottomWidth: 0.5,
-    borderColor: theme.COLORS.TITLE,
-  },
-  totalItemsText: {
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize: 16,
-  },
-  totalAmountText: {
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize: 24,
-    fontStyle: "italic",
-    paddingVertical: 4,
-  },
-  taxText: {
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize: 16,
-    fontStyle: "italic",
-  },
-  shippingText: {
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize: 16,
-    fontStyle: "italic",
-  },
-  rowView: {
-    flexDirection: "row",
-    paddingVertical: 2,
-  },
-  labelView: {
-    fontWeight: "500",
-    fontStyle: "normal",
-  },
-  cardContainer: {
-    flex: 1,
-    flexDirection: "row",
-    marginHorizontal: 6,
-    marginVertical: 6,
-    borderWidth: 0.5,
-    borderColor: theme.COLORS.TITLE,
-    borderRadius: 5,
-    backgroundColor: theme.COLORS.WHITE,
 
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
-  },
-  image: {
-    width: Dimensions.get("window").width / 3,
-    height: Dimensions.get("window").width / 3,
-    borderTopLeftRadius: 5,
-    borderBottomLeftRadius: 5,
-  },
-
-  textContainer: {
-    flex: 1,
-    backgroundColor: theme.COLORS.WHITE,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    justifyContent: "flex-start",
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-
-  addText: {
-    textAlign: "right",
-    fontSize: 18,
-    fontWeight: "600",
-    color: theme.COLORS.TITLE,
-  },
-  addTouch: {
-    flex: 1,
-    alignSelf: "flex-end",
-    marginHorizontal: 3,
-  },
-  priceText: {
-    textAlign: "left",
-    fontWeight: "500",
-    fontStyle: "italic",
-    fontSize: 17,
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    flex: 10,
-  },
-  priceView: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  nameText: {
-    flexWrap: "wrap",
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-    fontSize: 15,
-    flex: 10,
-  },
-  textCard: {
-    color: theme.COLORS.TITLE,
-    fontSize: 20,
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-  },
-  labelCard: {
-    fontWeight: "900",
-    fontSize: 20,
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-  },
-  list:{
-
-  },
-  button: {
-    height: 47,
-    borderRadius: 3,
-    flexDirection: 'row',
-    alignItems:'center',
-    marginHorizontal:10,
-  },
-  buttonCart: {
-    backgroundColor: theme.COLORS.WHITE,
-    borderWidth: 1,
-    borderColor: theme.COLORS.PRIMARY
-  },
-  checkoutBuy: {
-    borderWidth: 1,
-    borderColor: theme.COLORS.PRIMARY,
-    backgroundColor: theme.COLORS.PRIMARY,
-  },
-  buttonText:{
-    paddingLeft:10,
-    flex:1,
-    fontSize: 20,
-    textAlignVertical: 'center',
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
-  },
-});
 
 const SHIPPING_FEE = 9.99;
 const TAX_RATE = 0.13;
@@ -174,6 +33,7 @@ export default ({ navigation }) => {
   let [qtyVisibility, setQtyVisibility] = useState(false);
   let [sizelVisibility, setSizeVisibility] = useState(false);
   let [selectedItem, setSelectedItem] = useState({});
+  let userRoute;
 
   //Options - size
   const [tabSizeOptions, setTabSizeOptions] = useState([
@@ -198,6 +58,34 @@ export default ({ navigation }) => {
     { key: 8, name: "9", checked: false, onPress: () => {}, disable: false },
     { key: 9, name: "10", checked: false, onPress: () => {}, disable: false },
   ]);
+
+
+  React.useLayoutEffect(() => {
+    checkAuth();
+    navigation.setOptions({
+      title: "ClotheStore",
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate(userRoute)}>
+          <Ionicons
+            name={"person"}
+            size={25}
+            color={theme.COLORS.WHITE}
+            style={{ marginRight: 10 }}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  const checkAuth = () => {
+    firebase.auth().onAuthStateChanged(user => {
+        if(user){
+          userRoute = 'account'
+        }else {
+          userRoute = 'signin'
+        }
+    })
+  }
 
   const checkItemExists = (data, id) => {
     return data.find((x) => x.item === id);
@@ -285,6 +173,8 @@ export default ({ navigation }) => {
     showCart();
     //Storage.clearMapForKey('cart')
   }, [products]);
+
+  
 
   /** MODAL */
   const showSizeModal = (item) => {
@@ -438,22 +328,6 @@ export default ({ navigation }) => {
     }
   };
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "ClotheStore",
-      headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("signin")}>
-          <Ionicons
-            name={"person"}
-            size={25}
-            color={theme.COLORS.WHITE}
-            style={{ marginRight: 10 }}
-          />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
   const renderCard = (item) => {
     return (
       <View style={styles.cardContainer}>
@@ -585,3 +459,147 @@ export default ({ navigation }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignContent: "center",
+  },
+  headerContainer: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderBottomWidth: 0.5,
+    borderColor: theme.COLORS.TITLE,
+  },
+  totalItemsText: {
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    fontSize: 16,
+  },
+  totalAmountText: {
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    fontSize: 24,
+    fontStyle: "italic",
+    paddingVertical: 4,
+  },
+  taxText: {
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    fontSize: 16,
+    fontStyle: "italic",
+  },
+  shippingText: {
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    fontSize: 16,
+    fontStyle: "italic",
+  },
+  rowView: {
+    flexDirection: "row",
+    paddingVertical: 2,
+  },
+  labelView: {
+    fontWeight: "500",
+    fontStyle: "normal",
+  },
+  cardContainer: {
+    flex: 1,
+    flexDirection: "row",
+    marginHorizontal: 6,
+    marginVertical: 6,
+    borderWidth: 0.5,
+    borderColor: theme.COLORS.TITLE,
+    borderRadius: 5,
+    backgroundColor: theme.COLORS.WHITE,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  image: {
+    width: Dimensions.get("window").width / 3,
+    height: Dimensions.get("window").width / 3,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
+  },
+
+  textContainer: {
+    flex: 1,
+    backgroundColor: theme.COLORS.WHITE,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    justifyContent: "flex-start",
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+  },
+
+  addText: {
+    textAlign: "right",
+    fontSize: 18,
+    fontWeight: "600",
+    color: theme.COLORS.TITLE,
+  },
+  addTouch: {
+    flex: 1,
+    alignSelf: "flex-end",
+    marginHorizontal: 3,
+  },
+  priceText: {
+    textAlign: "left",
+    fontWeight: "500",
+    fontStyle: "italic",
+    fontSize: 17,
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    flex: 10,
+  },
+  priceView: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  nameText: {
+    flexWrap: "wrap",
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    fontSize: 15,
+    flex: 10,
+  },
+  textCard: {
+    color: theme.COLORS.TITLE,
+    fontSize: 20,
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+  },
+  labelCard: {
+    fontWeight: "900",
+    fontSize: 20,
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+  },
+  list:{
+
+  },
+  button: {
+    height: 47,
+    borderRadius: 3,
+    flexDirection: 'row',
+    alignItems:'center',
+    marginHorizontal:10,
+  },
+  buttonCart: {
+    backgroundColor: theme.COLORS.WHITE,
+    borderWidth: 1,
+    borderColor: theme.COLORS.PRIMARY
+  },
+  checkoutBuy: {
+    borderWidth: 1,
+    borderColor: theme.COLORS.PRIMARY,
+    backgroundColor: theme.COLORS.PRIMARY,
+  },
+  buttonText:{
+    paddingLeft:10,
+    flex:1,
+    fontSize: 20,
+    textAlignVertical: 'center',
+    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+  },
+});
