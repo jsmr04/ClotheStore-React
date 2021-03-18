@@ -109,10 +109,29 @@ export default ({ navigation }) => {
   /* END FAVORITES */
 
   /* CART */
-  const addToCart = () => {
+  const addToCart = async () => {
+    let newQty = 0;
     let selectedSize = tabOptions.filter((x) => x.checked)[0].name;
+    
     console.log("- NEW CART ITEM -");
     console.log(selectedItem.id + "-" + selectedSize);
+
+    let currentCartData = await Storage.getAllDataForKey("cart");
+    let currentCartItem = currentCartData.filter(
+      (x) => x.item == selectedItem.id && x.size == selectedSize
+    )[0];
+
+    console.log("- CURRENT CART ITEM -");
+    console.log(currentCartItem);
+
+    if (currentCartItem == undefined) {
+      newQty = 1;
+    } else {
+      newQty = currentCartItem.quantity + 1;
+    }
+
+    console.log("- NEW CART ITEM -");
+    console.log(selectedItem.id + "-" + selectedSize + "-" + newQty);
 
     if (selectedSize) {
       Storage.save({
@@ -121,7 +140,7 @@ export default ({ navigation }) => {
         data: {
           item: selectedItem.id,
           size: selectedSize,
-          quantity: 1, //Default quantity
+          quantity: newQty, //Default quantity
         },
       }).then(() => {
         Toast.show({
@@ -257,7 +276,12 @@ export default ({ navigation }) => {
         />
       ) : (
         <>
-          <CustomModal title={'SIZE'} visible={modalVisibility} onCancel={() => hideModal()} onSave={() => addToCart()} >
+          <CustomModal
+            title={"SIZE"}
+            visible={modalVisibility}
+            onCancel={() => hideModal()}
+            onSave={() => addToCart()}
+          >
             <TabOptions
               options={tabOptions}
               highlightColor={theme.COLORS.PRIMARY}
@@ -375,7 +399,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     flex: 10,
   },
-  
+
   modalButton: {
     flexDirection: "row",
     width: "80%",
