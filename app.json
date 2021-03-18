@@ -2,6 +2,7 @@
   "expo": {
     "name": "ClotheStore-React",
     "slug": "ClotheStore-React",
+    "privacy": "public",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,6 +20,11 @@
     "ios": {
       "supportsTablet": true
     },
+    "androidStatusBar": {
+      "backgroundColor":"#5a2d82",
+      "translucent": false
+    },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

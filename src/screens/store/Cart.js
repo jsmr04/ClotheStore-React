@@ -96,7 +96,7 @@ export default ({ navigation }) => {
 
   const showCart = (type) => {
     let cartProducts = [];
-
+  
     if (products.length > 0) {
       Storage.getAllDataForKey("cart").then((cartList) => {
         console.log("- products -");
