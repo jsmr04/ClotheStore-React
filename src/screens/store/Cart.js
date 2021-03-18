@@ -7,8 +7,6 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  Button,
-  ScrollView,
 } from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import theme from "../theme";
@@ -19,8 +17,6 @@ import Util from "../../helpers/Util";
 import CustomModal from "../../components/CustomModal";
 import TabOptions from "../../components/TabOptions";
 import firebase from "firebase";
-
-
 
 const SHIPPING_FEE = 9.99;
 const TAX_RATE = 0.13;
@@ -287,12 +283,22 @@ export default ({ navigation }) => {
     setTabQtyOptions(newTabOptions2);
   }, []);
 
-  const updateCart = (type) => {
+  const updateCart = async (type) => {
     if (type === "size") {
       let selectedSize = tabSizeOptions.filter((x) => x.checked)[0].name;
       console.log("- NEW CART ITEM -");
       console.log(selectedItem.id + "-" + selectedSize);
       console.log(selectedItem);
+
+      let newQty = 0;
+      let currentCartData = await Storage.getAllDataForKey("cart")
+      let currentCartItem = currentCartData.filter(x => x.item == selectedItem.id && x.size == selectedSize)[0]
+      
+      if(currentCartItem != undefined){
+        newQty = Number(currentCartItem.quantity) + Number(selectedItem.quantity);
+      }else{
+        newQty = selectedItem.quantity 
+      }
 
       //First, remove the current item from cart
       Storage.remove({ key: "cart", id: selectedItem.key }).then(() => {
@@ -302,7 +308,7 @@ export default ({ navigation }) => {
           data: {
             item: selectedItem.id,
             size: selectedSize,
-            quantity: selectedItem.quantity, //Default quantity
+            quantity: newQty, //Default quantity
           },
         }).then(() => {
           console.log("Item updated");

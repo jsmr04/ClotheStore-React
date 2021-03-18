@@ -98,11 +98,26 @@ export default ({ route, navigation }) => {
     []
   );
 
-  const addToCart = () => {
+  const addToCart = async () => {
+    
     if (tabOptions.filter((x) => x.checked).length > 0) {
+      let newQty = 0;
       let selectedSize = tabOptions.filter((x) => x.checked)[0].name;
+
+      let currentCartData = await Storage.getAllDataForKey("cart")
+      let currentCartItem = currentCartData.filter(x => x.item == item.id && x.size == selectedSize)[0]
+
+      console.log("- CURRENT CART ITEM -");
+      console.log(currentCartItem)
+
+      if(currentCartItem == undefined){
+        newQty = 1;
+      }else{
+        newQty = currentCartItem.quantity + 1;
+      }
+
       console.log("- NEW CART ITEM -");
-      console.log(item.id + "-" + selectedSize);
+      console.log(item.id + "-" + selectedSize + "-" + newQty);
 
       if (selectedSize) {
         Storage.save({
@@ -111,7 +126,7 @@ export default ({ route, navigation }) => {
           data: {
             item: item.id,
             size: selectedSize,
-            quantity: 1, //Default quantity
+            quantity: newQty, 
           },
         }).then(() => {
           Toast.show({
