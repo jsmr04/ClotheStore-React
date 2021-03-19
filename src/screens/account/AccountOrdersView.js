@@ -49,7 +49,7 @@ export default ({route, navigation}) => {
             <Image style={styles.image} source={{ uri: url }} />
         )
     }
-
+5
     const renderCard = (item, status) => {
         var color = ''
         switch (status) {

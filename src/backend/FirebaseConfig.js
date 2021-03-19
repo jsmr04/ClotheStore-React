@@ -19,13 +19,3 @@ export default () => {
     
     return firebase;
 };
-
-// checkAuth = () => {
-//     firebase.auth().onAuthStateChanged(user => {
-//         if(user){
-
-//         }else {
-            
-//         }
-//     })
-// }

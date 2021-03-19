@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import FirebaseConfig from "./FirebaseConfig";
 
 export default (path) => {
-  let [data, setData] = useState([]);
+  let [item, setItem] = useState({});
   let [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -10,7 +10,6 @@ export default (path) => {
   }, []);
 
   const getDataFromFirebase = () => {
-    let tmpData = [];
     //Init Firebase
     const firebase = FirebaseConfig();
     //Database
@@ -18,16 +17,10 @@ export default (path) => {
 
     //Get data from Firebase
     productRef.once("value", function (snapshot) {
-      snapshot.forEach(function (childSnapshot) {
-
-        tmpData.push(childSnapshot.val());
-      });
-
-      //Update states
       setLoading(false);
-      setData(tmpData);
+      setItem(snapshot);
     });
   };
 
-  return { loading, data };
+  return { loading, item };
 };
