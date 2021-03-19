@@ -26,6 +26,7 @@ export default ({ navigation }) => {
   let [cartData, setCartData] = useState([]);
   let [taxAmount, setTaxAmount] = useState(0);
   let [totalAmount, setTotalAmount] = useState(0);
+  let [subTotalAmount, setSubTotalAmount] = useState(0);
   let [qtyVisibility, setQtyVisibility] = useState(false);
   let [sizelVisibility, setSizeVisibility] = useState(false);
   let [selectedItem, setSelectedItem] = useState({});
@@ -159,6 +160,12 @@ export default ({ navigation }) => {
           sum += x.quantity * x.price * (1 + TAX_RATE);
           return sum;
         }, 0) + SHIPPING_FEE
+      );
+      setSubTotalAmount(
+        cartData.reduce((sum, x) => {
+          sum += x.quantity * x.price;
+          return sum;
+        }, 0)
       );
     } else {
       setTaxAmount(0);
@@ -384,19 +391,29 @@ export default ({ navigation }) => {
           <Text style={styles.nameText}>{item.name}</Text>
 
           {/* Third line */}
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          >
-            <TouchableOpacity onPress={() => showQtyModal(item)}>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.textCard}>Qty:</Text>
-                <Text style={styles.textCard}>{item.quantity}</Text>
-              </View>
-            </TouchableOpacity>
+          <View style={{ flexDirection: "row", justifyContent: 'space-evenly'}}>
             <TouchableOpacity onPress={() => showSizeModal(item)}>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.textCard}>Size:</Text>
                 <Text style={styles.textCard}>{item.size}</Text>
+                <FontAwesome
+                style={{ marginLeft: 25 }}
+                name={"angle-down"}
+                size={24}
+                color={theme.COLORS.PRIMARY}
+                />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.separatorVertical}/>
+            <TouchableOpacity onPress={() => showQtyModal(item)}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.textCard}>Qty - </Text>
+                <Text style={styles.textCard}>{item.quantity}</Text>
+                <FontAwesome
+                style={{ marginLeft: 25 }}
+                name={"angle-down"}
+                size={24}
+                color={theme.COLORS.PRIMARY}
+                />
               </View>
             </TouchableOpacity>
           </View>
@@ -413,36 +430,45 @@ export default ({ navigation }) => {
         onDidBlur={(payload) => console.log("onDidBlur")}
         onDidFocus={(payload) => loadCart(payload)}
       />
+      <Text style={styles.totalItemsText}>{`${cartData.length} ITEMS`}</Text>
+      <View style={styles.separator}/>
       <View style={styles.headerContainer}>
-        <Text style={styles.totalItemsText}>{`${cartData.length} ITEMS`}</Text>
-        <Text style={styles.totalAmountText}>
-          C${Util.formatter.format(totalAmount)}
-        </Text>
-
-        <View style={styles.rowView}>
-          <Text style={[styles.taxText, styles.labelView]}>Tax: </Text>
-          <Text style={styles.taxText}>
-            C${Util.formatter.format(taxAmount)}
+        <View style={styles.middleContainer}>
+          <Text style={styles.textConnerLeft}>SubTotal: </Text>
+          <Text style={styles.textConnerRight}>
+            C{Util.formatter.format(subTotalAmount)}
           </Text>
         </View>
-
-        <View style={styles.rowView}>
-          <Text style={[styles.shippingText, styles.labelView]}>
+        <View style={styles.middleContainer}>
+          <Text style={styles.textConnerLeft}>Tax: </Text>
+          <Text style={styles.textConnerRight}>
+            C{Util.formatter.format(taxAmount)}
+          </Text>
+        </View>
+        <View style={styles.middleContainer}>
+          <Text style={styles.textConnerLeft}>
             Shipping Fee:
           </Text>
-          <Text style={styles.shippingText}>
+          <Text style={styles.textConnerRight}>
+            <FontAwesome
+              style={{ marginHorizontal: 6 }}
+              name={"truck"}
+              size={16}
+              color={theme.COLORS.WARNING}
+            />
             {cartData.length > 0
-              ? `C${Util.formatter.format(SHIPPING_FEE)}`
-              : `C$0.00`}
+              ? ` C${Util.formatter.format(SHIPPING_FEE)}`
+              : ` C$0.00`}
           </Text>
-          <FontAwesome
-            style={{ marginHorizontal: 6 }}
-            name={"truck"}
-            size={20}
-            color={theme.COLORS.WARNING}
-          />
+        </View>
+        <View style={styles.middleContainer}>
+          <Text style={{fontSize: 17, color: 'black'}}>Total: </Text>
+          <Text style={[styles.textConnerRight, {fontSize: 17, fontWeight: '700'}]}>
+            C{Util.formatter.format(totalAmount)}
+          </Text>
         </View>
       </View>
+      <View style={styles.separator}/>
       <FlatList
         vertical
         showsVerticalScrollIndicator={false}
@@ -463,7 +489,7 @@ export default ({ navigation }) => {
               color={theme.COLORS.WHITE}
               style={styles.buttonIcon}
             />
-            Go to Checkout
+            Checkout
           </Text>
         </TouchableOpacity>
       </View>
@@ -506,31 +532,56 @@ const styles = StyleSheet.create({
     alignContent: "center",
     backgroundColor: theme.COLORS.WHITE,
   },
+  separator:{
+    marginLeft: 10,
+    marginRight: 10,
+    borderBottomWidth: 1,
+    borderColor: theme.COLORS.PRIMARY,
+  },
+  separatorVertical:{
+    marginLeft: 10,
+    marginRight: 10,
+    borderLeftWidth: 1,
+    borderColor: theme.COLORS.PRIMARY,
+  },
   headerContainer: {
     paddingVertical: 4,
+    paddingBottom: 10,
     paddingHorizontal: 10,
-    borderBottomWidth: 0.5,
-    borderColor: theme.COLORS.TITLE,
+  },
+  middleContainer: {
+    flexDirection: "row",
+    paddingVertical: 5,
+  },
+  textConnerLeft: {
+    color: theme.COLORS.TITLE,
+    fontSize: 15 
+  },
+  textConnerRight: {
+    flex:1,
+    textAlign: 'right',
+    fontSize: 15
   },
   totalItemsText: {
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
     fontSize: 16,
+    color: theme.COLORS.PRIMARY,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   totalAmountText: {
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
     fontSize: 24,
-    fontStyle: "italic",
     paddingVertical: 4,
+    fontWeight: '600'
   },
   taxText: {
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
     fontSize: 16,
-    fontStyle: "italic",
   },
   shippingText: {
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
     fontSize: 16,
-    fontStyle: "italic",
   },
   rowView: {
     flexDirection: "row",
@@ -543,7 +594,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
     flexDirection: "row",
-    marginHorizontal: 6,
+    marginHorizontal: 10,
     marginVertical: 6,
     borderWidth: 0.5,
     borderColor: theme.COLORS.TITLE,
@@ -566,17 +617,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
   },
-
   textContainer: {
     flex: 1,
     backgroundColor: theme.COLORS.WHITE,
-    paddingVertical: 6,
+    paddingVertical: 10,
     paddingHorizontal: 10,
     justifyContent: "flex-start",
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
   },
-
   addText: {
     textAlign: "right",
     fontSize: 18,
@@ -607,16 +656,14 @@ const styles = StyleSheet.create({
     flex: 10,
   },
   textCard: {
-    color: theme.COLORS.TITLE,
-    fontSize: 20,
-    fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+    color: theme.COLORS.PRIMARY,
+    fontSize: 16,
   },
   labelCard: {
     fontWeight: "900",
     fontSize: 20,
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
   },
-  list: {},
   button: {
     height: 47,
     borderRadius: 3,
@@ -624,21 +671,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 10,
   },
-  buttonCart: {
-    backgroundColor: theme.COLORS.WHITE,
-    borderWidth: 1,
-    borderColor: theme.COLORS.PRIMARY,
-  },
   checkoutBuy: {
     borderWidth: 1,
     borderColor: theme.COLORS.PRIMARY,
     backgroundColor: theme.COLORS.PRIMARY,
   },
-  buttonText: {
-    paddingLeft: 10,
-    flex: 1,
-    fontSize: 20,
-    textAlignVertical: "center",
+  buttonText:{
+    paddingLeft:10,
+    flex:1,
+    fontSize: 21,
+    textAlignVertical: 'center',
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
+  },
+  buttonIcon: {
+    marginRight: 10,
+    fontSize: 24
   },
 });

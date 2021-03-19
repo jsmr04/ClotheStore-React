@@ -295,7 +295,7 @@ export default ({ navigation }) => {
               style={styles.textResults}
             >{`${favoritesData.length} FAVORITES`}</Text>
           </View>
-
+          <View style={styles.separator}/>
           <FlatList
             vertical
             showsVerticalScrollIndicator={false}
@@ -316,10 +316,16 @@ const styles = StyleSheet.create({
     alignContent: "center",
     backgroundColor: theme.COLORS.WHITE,
   },
+  separator:{
+    marginLeft: 10,
+    marginRight: 10,
+    borderBottomWidth: 1,
+    borderColor: theme.COLORS.PRIMARY,
+  },
   cardContainer: {
     flex: 1,
     flexDirection: "row",
-    marginHorizontal: 6,
+    marginHorizontal: 10,
     marginVertical: 6,
     borderWidth: 0.5,
     borderColor: theme.COLORS.TITLE,
@@ -361,7 +367,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
     color: theme.COLORS.PRIMARY,
     fontSize: 16,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     paddingVertical: 10,
   },
   addText: {

@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import theme from "../theme";
@@ -11,7 +11,9 @@ export default ({navigation}) => {
     let [userAuth, setUserAuth] = useState();
     let [loading, setLoading] = useState();
     let [ordersData, setOrderData] = useState('');
+    let [productsImages, setProductsImages] = useState('');
     let database = FirebaseConfig();
+
     Moment.locale('en');
 
     const checkAuth = () => {
@@ -27,7 +29,6 @@ export default ({navigation}) => {
     };
     
     const fetchDetails = (id) => {
-        
         //console.log("fetchDetails " + id);
         const orderRef = database.database().ref("order/");
         let tmpData = []
@@ -39,29 +40,48 @@ export default ({navigation}) => {
             snapshot.forEach(function (childSnapshot) {
                 tmpData.push(childSnapshot.val())
             })
-            setLoading(false)
+            
             setOrderData(tmpData)
         })
+        const productsRef = database.database().ref("product/");
+        let tmpProducts = []
+        productsRef
+        .orderByChild("id")
+        .on("value", function (snapshot) {
+            tmpProducts = []
+            snapshot.forEach(function (childSnapshot) {
+                //console.log(childSnapshot.val().pictures[0].url)
+                tmpProducts.push({productID: childSnapshot.val().id, url: childSnapshot.val().pictures[0].url })
+            })
+            setLoading(false)
+            setProductsImages(tmpProducts)
+        })
+        //console.log(productsImages)
     }
 
     const fetchItemImage = (itemId) => {
         var url = "https://ui-avatars.com/api/?name=Clothe+Store&size=512"
         //console.log(itemId)
-        const orderRef = database.database().ref("product/");
+        //const orderRef = database.database().ref("product/");
 
-        orderRef
-        .orderByChild("id")
-        .equalTo(itemId)
-        .on("value", function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                //console.log(childSnapshot.val().pictures[0].url)
-                url = childSnapshot.val().pictures[0].url
+        // orderRef
+        // .orderByChild("id")
+        // .equalTo(itemId)
+        // .on("value", function (snapshot) {
+        //     snapshot.forEach(function (childSnapshot) {
+        //         //console.log(childSnapshot.val().pictures[0].url)
+        //         url = childSnapshot.val().pictures[0].url
+        //     })
+        // })
+        //console.log(productsImages)
+        if(productsImages !== ''){
+            productsImages.forEach(x => {
+                if(x.productID === itemId){
+                    url = x.url
+                }
             })
-        })
-        
-        return (
-            <Image style={styles.image} source={{ uri: url }} />
-        )
+        }
+        return url
     }
 
     const countItems = (items) => {
@@ -100,7 +120,7 @@ export default ({navigation}) => {
         return (
             <TouchableOpacity activeOpacity={0.7} onPress={() => {navigation.navigate('ordersview', {order: item})}}>
                 <View style={[styles.cardContainer, {borderRightColor: color}]}>
-                    {fetchItemImage(item.items[0].productId)}
+                    <Image style={styles.image} source={{ uri: fetchItemImage(item.items[0].productId) }} />
                     <View style={styles.textContainer}>
                         {/* First line  */}
                         <Text style={styles.nameText}><Text style={{fontWeight: '700'}}>Order: </Text>{item.orderId}</Text>
