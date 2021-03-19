@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
     flexDirection: "row",
-    marginHorizontal: 6,
+    marginHorizontal: 10,
     marginVertical: 6,
     borderWidth: 0.5,
     borderColor: theme.COLORS.TITLE,
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.FONT.DEFAULT_FONT_FAMILY,
     color: theme.COLORS.PRIMARY,
     fontSize: 16,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     paddingVertical: 10,
   },
   addText: {

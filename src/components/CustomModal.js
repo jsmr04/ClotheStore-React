@@ -8,9 +8,35 @@ import {
   Dimensions,
   StatusBar,
   SafeAreaView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
   Pressable
 } from "react-native";
 import theme from "../screens/theme";
+
+export default ({ visible, children, title, onCancel, onSave }) => {
+  
+  return (
+    <>
+      <Modal visible={visible} animationType={"fade"} transparent={true} statusBarTranslucent={true} onRequestClose={visible}>
+        <TouchableOpacity style={styles.modalCenteredView} activeOpacity={1} onPressOut={onCancel}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalView}>
+                <Text style={styles.modalTitle}>{title}</Text>
+                <View style={styles.divider} />
+                  {children}
+                <View style={styles.modalButton}>
+                  <Pressable onPress={onSave} style={styles.button}>
+                    <Text style={styles.buttonText}>SAVE</Text>
+                  </Pressable>
+                </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+    </>
+  );
+};
 
 //Screen Style
 const styles = StyleSheet.create({
@@ -18,8 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
-    marginTop: 22,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
   },
   modalView: {
     // margin: 20,
@@ -28,9 +53,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopStartRadius: 20,
     borderTopEndRadius: 20,
-    paddingTop: 20,
-    paddingVertical: 35,
-    paddingBottom: 35,
+    paddingVertical: 25,
+    paddingHorizontal: 10,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -39,62 +63,31 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
   },
   modalTitle: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: "500",
     textAlign: "center",
-    
   },
   modalButton: {
-    marginVertical:15,
-    flexDirection: "row",
-    width: "80%",
-    justifyContent: "space-evenly",
+    width: Dimensions.get('window').width - 15,
+    marginVertical:20,
   },
-  top: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-
   button:{
-    borderRadius:10,
-    width:90, 
-    paddingHorizontal:15,
-    paddingVertical:10,
-    marginHorizontal:30,
+    width: "100%",
+    paddingVertical:13,
     backgroundColor:theme.COLORS.PRIMARY,
+    borderRadius: 10,
+  },
+  buttonText: {
     color: theme.COLORS.WHITE,
+    fontSize: 16,
     textAlign: 'center',
   },
   divider:{
-    borderWidth:0.2,
-    backgroundColor:'#eee',
+    borderWidth:0.3,
+    backgroundColor:theme.COLORS.PRIMARY,
     width: Dimensions.get('window').width - 15,
-    marginBottom: 10,
+    marginVertical: 10
   }
 });
-
-export default ({ visible, children, title, onCancel, onSave }) => {
-  return (
-    <>
-      <Modal visible={visible} animationType={"slide"} transparent={true}>
-        <View style={styles.modalCenteredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>{title}</Text>
-            <View style={styles.divider} />
-              {children}
-            <View style={styles.modalButton}>
-              <Pressable onPress={onCancel}>
-                <Text style={[styles.button, { backgroundColor: theme.COLORS.WARNING }]}>CANCEL</Text>
-              </Pressable>
-              <Pressable onPress={onSave}>
-                <Text style={styles.button}>SAVE</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </>
-  );
-};
