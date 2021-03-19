@@ -632,4 +632,8 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     paddingHorizontal: 10,
   },
+  buttonIcon: {
+    marginRight: 10,
+    fontSize: 24
+  },
 });

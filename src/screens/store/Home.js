@@ -87,10 +87,16 @@ export default ({navigation}) => {
         if(!snapshot.empty){
           //console.log(snapshot)
           let newProducts = [];
+          var intNum = 0;
           snapshot.forEach(function (childSnapshot) {
             newProducts.push(childSnapshot.val());
             //console.log(childSnapshot.key);
-            setLastDoc(parseInt(childSnapshot.child('id').val()) +1);
+            intNum = parseInt(childSnapshot.child('id').val()) + 1
+            if(intNum > 9){
+              setLastDoc("0" + intNum);
+            }else {
+              setLastDoc("00" + intNum)
+            }
           })
           setProducts(newProducts);
           //console.log(lastDoc)
@@ -106,7 +112,7 @@ export default ({navigation}) => {
     if(lastDoc){
       setIsMoreLoading(true);
       //alert(lastDoc.id)
-      productRef.orderByChild('id').startAt("00" + lastDoc.toString()).once("value", function (snapshot) {
+      productRef.orderByChild('id').startAt(lastDoc).once("value", function (snapshot) {
         if(snapshot.exists){
           console.log(snapshot)
             let newProducts = products;
@@ -205,7 +211,7 @@ export default ({navigation}) => {
             onRefresh={onRefresh}
           />
         }
-        onEndReachedThreshold = {0.1}
+        onEndReachedThreshold = {0.2}
         onMomentumScrollBegin = {() => {onEndReachedCallDuringMomentum = false;}}
         onEndReached = {() => {
           if (!onEndReachedCallDuringMomentum && !isMoreLoading) {

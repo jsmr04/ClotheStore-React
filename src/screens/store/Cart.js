@@ -57,10 +57,6 @@ export default ({ route, navigation }) => {
     { key: 9, name: "10", checked: false, onPress: () => {}, disable: false },
   ]);
 
-  const didBlurSubscription = navigation.addListener("didBlur", (payload) => {
-    console.debug("newDidBlur", payload);
-  });
-
   useEffect(() => {
     console.log("useEffect Reload")
     console.log("Inside")
@@ -69,7 +65,41 @@ export default ({ route, navigation }) => {
       showCart();
     });
     return reload;
-  }, [navigation]);
+  }, [navigation, products]);
+
+  useEffect(() => {
+    //Sizes
+    let newTabOptions = [];
+    tabSizeOptions.forEach((x) => {
+      //onPress function
+      x.onPress = checkSizeOption;
+      newTabOptions.push(x);
+    });
+
+    setTabSizeOptions(newTabOptions);
+
+    //Quantities
+    let newTabOptions2 = [];
+    tabQtyOptions.forEach((x) => {
+      //console.log("tabQtyOptions ");
+      //console.log(x);
+      //onPress function
+      x.onPress = checkQtyOption;
+      newTabOptions2.push(x);
+    });
+
+    setTabQtyOptions(newTabOptions2);
+  }, []);
+
+  useEffect(() => {
+    //console.log("calculateTotals()");
+    calculateTotals();
+  }, [cartData]);
+
+  useEffect(() => {
+    showCart();
+    //Storage.clearMapForKey('cart')
+  }, [products]);
 
   React.useLayoutEffect(() => {
     checkAuth();
@@ -99,10 +129,6 @@ export default ({ route, navigation }) => {
     });
   };
 
-  const checkItemExists = (data, id) => {
-    return data.find((x) => x.item === id);
-  };
-
   //Load Cart
   const loadCart = (payload) => {
     //console.log("onDidFocus");
@@ -113,13 +139,16 @@ export default ({ route, navigation }) => {
 
   const showCart = (type) => {
     let cartProducts = [];
-    setCartData([])
+
+    console.log('showCart')
+    console.log(cartData)
+    console.log(products)
+    console.log(loading)
 
     if (products.length > 0) {
-      Storage.getAllDataForKey("cart").then((cartList) => {
-        //console.log("- products -");
-        //console.log(products);
 
+      Storage.getAllDataForKey("cart").then((cartList) => {
+        
         cartList.forEach((x) => {
           let product = products.filter((p) => p.id == x.item)[0];
           cartProducts.push({
@@ -142,6 +171,8 @@ export default ({ route, navigation }) => {
         //console.log("-Cart-");
         //console.log(cartData);
       });
+    }else{
+      setCartData([]);
     }
   };
 
@@ -186,15 +217,7 @@ export default ({ route, navigation }) => {
     }
   };
 
-  useEffect(() => {
-    //console.log("calculateTotals()");
-    calculateTotals();
-  }, [cartData]);
-
-  useEffect(() => {
-    showCart();
-    //Storage.clearMapForKey('cart')
-  }, [products]);
+  
 
   /** MODAL */
   const showSizeModal = (item) => {
@@ -283,29 +306,7 @@ export default ({ route, navigation }) => {
   };
 
   //Assign function
-  useEffect(() => {
-    //Sizes
-    let newTabOptions = [];
-    tabSizeOptions.forEach((x) => {
-      //onPress function
-      x.onPress = checkSizeOption;
-      newTabOptions.push(x);
-    });
-
-    setTabSizeOptions(newTabOptions);
-
-    //Quantities
-    let newTabOptions2 = [];
-    tabQtyOptions.forEach((x) => {
-      //console.log("tabQtyOptions ");
-      //console.log(x);
-      //onPress function
-      x.onPress = checkQtyOption;
-      newTabOptions2.push(x);
-    });
-
-    setTabQtyOptions(newTabOptions2);
-  }, []);
+  
 
   const updateCart = async (type) => {
     if (type === "size") {

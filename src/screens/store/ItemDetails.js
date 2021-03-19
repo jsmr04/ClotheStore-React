@@ -237,28 +237,16 @@ export default ({ route, navigation }) => {
       <View style={styles.viewButtons}>
         <View style={{ marginTop: 5 }}>
           <TouchableOpacity
-            style={[styles.button, styles.buttonCart]}
+            style={[styles.button, styles.buttonBuy]}
             onPress={() => addToCart()}
           >
-            <Text style={[styles.buttonText, { color: theme.COLORS.PRIMARY }]}>
-              <Ionicons
-                name={"cart-outline"}
-                color={theme.COLORS.PRIMARY}
-                style={styles.buttonIcon}
-              />
-              Add to Cart
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ marginTop: 10 }}>
-          <TouchableOpacity style={[styles.button, styles.buttonBuy]} onPress={() => goToCart()} >
             <Text style={[styles.buttonText, { color: theme.COLORS.WHITE }]}>
               <Ionicons
-                name={"arrow-forward"}
+                name={"cart-outline"}
                 color={theme.COLORS.WHITE}
                 style={styles.buttonIcon}
               />
-              Buy it now
+              Add to Cart
             </Text>
           </TouchableOpacity>
         </View>

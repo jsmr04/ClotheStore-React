@@ -28,6 +28,6 @@ export default (path) => {
       setData(tmpData);
     });
   };
-
+  console.log('getting data from firebase')
   return { loading, data };
 };
