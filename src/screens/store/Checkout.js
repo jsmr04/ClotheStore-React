@@ -6,7 +6,7 @@ import {
   Dimensions,
   TextInput,
   Image,
-  FlatList,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import GetSingleItem from "../../backend/GetSingleItem";
@@ -14,11 +14,9 @@ import Util from "../../helpers/Util";
 import theme from "../theme";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import CustomModal from "../../components/CustomModal";
-import FirebaseConfig from "../../backend/FirebaseConfig";
 import firebase from "firebase";
 import Toast from "react-native-toast-message";
 import Storage from "../../backend/LocalStorage";
-import { NavigationActions } from 'react-navigation';
 
 const SHIPPING_FEE = 9.99;
 const TAX_RATE = 0.13;
@@ -162,9 +160,7 @@ export default ({ route, navigation }) => {
 
         try {
           //Create order on Firebase
-          await firebase.database()
-            .ref(`order/${newOrderKey}`)
-            .set(order);
+          await firebase.database().ref(`order/${newOrderKey}`).set(order);
           //Clear the cartt
           await Storage.clearMapForKey("cart");
           //Show toast message
@@ -173,11 +169,10 @@ export default ({ route, navigation }) => {
             text2: `The order #${orderId} has been placed.`,
           });
 
-
           //Replace screen
           //navigation.replace('home');
           //TODO: There is a bug here, CART is not being cleared
-          navigation.popToTop();
+          navigation.goBack();
         } catch (e) {
           console.error(e);
         }
@@ -213,21 +208,26 @@ export default ({ route, navigation }) => {
     let message = `${inputName} is required!`;
 
     Toast.show({
-        type: 'error',
-        text1: 'Attention! 👋',
-        text2: message,
-        position: 'bottom',
-        topOffset: 60,
-        bottomOffset: 80,
-      });
+      type: "error",
+      text1: "Attention! 👋",
+      text2: message,
+      position: "bottom",
+      topOffset: 60,
+      bottomOffset: 80,
+    });
   };
 
   const getHeader = () => {
     return (
-      <View style={{ alignSelf:'stretch' }}>
-      <View style={styles.topContainer}>
-          
-          <View style={{paddingVertical: 35, paddingHorizontal: 35, flexDirection: "row", }}>
+      <View style={{ alignSelf: "stretch" }}>
+        <View style={styles.topContainer}>
+          <View
+            style={{
+              paddingVertical: 35,
+              paddingHorizontal: 35,
+              flexDirection: "row",
+            }}
+          >
             <Ionicons name="location-outline" size={26} color="black" />
             <View style={{ paddingHorizontal: 15, width: "85%" }}>
               <Text>{userInfo.fullName}</Text>
@@ -242,7 +242,6 @@ export default ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-
 
         <View styles={styles.creditCard}>
           <Text style={styles.title}>PAYMENT</Text>
@@ -293,33 +292,9 @@ export default ({ route, navigation }) => {
     );
   };
 
-  const renderCard = (item) => {
-    return (
-      <View
-        style={[
-          styles.cardContainer,
-          { borderRightColor: theme.COLORS.PRIMARY },
-        ]}
-      >
-        <Image style={styles.image} source={{ uri: item.pictures[0].url }} />
-        <View style={styles.textContainer}>
-          {/* First line  */}
-          <Text style={{ fontWeight: "700", marginTop: 10 }}>{item.name}</Text>
-          <Text>
-            {item.size} {item.quantity} Items
-          </Text>
-          <Text>{item.id}</Text>
-          <Text style={styles.priceText}>{`C${Util.formatter.format(
-            item.price
-          )}`}</Text>
-        </View>
-      </View>
-    );
-  };
-
   const getAddressModal = () => {
-      return(
-        <CustomModal
+    return (
+      <CustomModal
         title={"SHIPPING ADDRESS"}
         visible={visibility}
         onCancel={() => setVisibility(false)}
@@ -358,8 +333,8 @@ export default ({ route, navigation }) => {
           />
         </View>
       </CustomModal>
-      )
-  }
+    );
+  };
 
   const getFooter = () => {
     return (
@@ -421,35 +396,63 @@ export default ({ route, navigation }) => {
     return allItems;
   };
 
+  const geItemList = () => {
+    return (
+      <View>
+        {cartData &&
+          cartData.map((item, key) => (
+            <View
+              key={key}
+              style={[
+                styles.cardContainer,
+                { borderRightColor: theme.COLORS.PRIMARY },
+              ]}
+            >
+              <Image
+                style={styles.image}
+                source={{ uri: item.pictures[0].url }}
+              />
+              <View style={styles.textContainer}>
+                {/* First line  */}
+                <Text style={{ fontWeight: "700", marginTop: 10 }}>
+                  {item.name}
+                </Text>
+                <Text>
+                  {item.size} {item.quantity} Items
+                </Text>
+                <Text>{item.id}</Text>
+                <Text style={styles.priceText}>{`C${Util.formatter.format(
+                  item.price
+                )}`}</Text>
+              </View>
+            </View>
+          ))}
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
-    { getAddressModal() }
-    { getHeader() }
-    
-      <FlatList
-        vertical
-        showsVerticalScrollIndicator={false}
-        data={cartData}
-        renderItem={({ item }) => renderCard(item)}
-        keyExtractor={(x) => x.productId}
-        // ListHeaderComponent={getHeader}
-        ListFooterComponent={getFooter}
-      />
+      {getAddressModal()}
+      <ScrollView>
+        {getHeader()}
+        {geItemList()}
+        {getFooter()}
+      </ScrollView>
       <View style={{ marginTop: 10, height: 60 }}>
-        <TouchableOpacity
-          onPress={() => placeOrder()}
-          style={[styles.button, styles.checkoutBuy]}
-        >
-          <Text style={[styles.buttonText, { color: theme.COLORS.WHITE }]}>
-            <Ionicons
-              name={"arrow-forward"}
-              color={theme.COLORS.WHITE}
-              style={styles.buttonIcon}
-            />
-            Place Order
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={() => placeOrder()}
+            style={[styles.button, styles.checkoutBuy]}>
+            <Text style={[styles.buttonText, { color: theme.COLORS.WHITE }]}>
+              <Ionicons
+                name={"arrow-forward"}
+                color={theme.COLORS.WHITE}
+                style={styles.buttonIcon}
+              />
+              Place Order
+            </Text>
+          </TouchableOpacity>
+        </View>
     </View>
   );
 };
@@ -586,7 +589,7 @@ const styles = StyleSheet.create({
     flex: 10,
   },
   creditCard: {
-      flexDirection:'column'
+    flexDirection: "column",
   },
   input: {
     paddingHorizontal: 8,
