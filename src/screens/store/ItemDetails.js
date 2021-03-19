@@ -21,6 +21,8 @@ import theme from "../theme";
 import Util from "../../helpers/Util";
 import Storage from "../../backend/LocalStorage";
 import Toast from "react-native-toast-message";
+import firebase from "firebase";
+import { NavigationActions } from 'react-navigation';
 
 const { height } = Dimensions.get("window");
 
@@ -29,6 +31,7 @@ export default ({ route, navigation }) => {
   const ref = useRef(null);
   const { item } = route.params;
   const [dataImages, setDataImages] = useState([]);
+  const [firebaseUser, setFirebaseUser] = useState({});
 
   let [activeSlide, setActiveSlide] = useState(0);
 
@@ -50,6 +53,17 @@ export default ({ route, navigation }) => {
       });
     });
     return itemSizes;
+  };
+
+  const checkAuth = () => {
+    firebase.auth().onAuthStateChanged((user) => {
+      setFirebaseUser(user); //cloning object
+      if (user) {
+        userRoute = "account";
+      } else {
+        userRoute = "signin";
+      }
+    });
   };
 
   //Options configuration
@@ -138,6 +152,22 @@ export default ({ route, navigation }) => {
     }
   };
 
+  const goToCart = async ()=>{
+    await addToCart();
+    //navigation.navigate('Cart')
+    //TODO: Implement navigation to CART
+    navigation.navigate('TabRoot', { screen: 'Cart' });
+
+    // navigation.navigate({
+    //   routeName: 'home',
+    //   params: {},
+    //   action: navigation.navigate({ routeName: 'Cart'}),
+    // });
+    
+    //navigation.dispatch(navigateAction);
+  }
+
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       title: "ClotheStore",
@@ -221,7 +251,7 @@ export default ({ route, navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={{ marginTop: 10 }}>
-          <TouchableOpacity style={[styles.button, styles.buttonBuy]}>
+          <TouchableOpacity style={[styles.button, styles.buttonBuy]} onPress={() => goToCart()} >
             <Text style={[styles.buttonText, { color: theme.COLORS.WHITE }]}>
               <Ionicons
                 name={"arrow-forward"}

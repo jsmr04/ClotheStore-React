@@ -12,13 +12,15 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get("screen");
 
-export default ({navigation}) => {
+export default ({route, navigation}) => {
 
   let database = FirebaseConfig();
   const [isSelected, setSelection] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   let [loading, setLoading] = useState(false);
+  let nextScreen = route.params?.nextScreen;
+  let cartData = route.params?.cartData
 
   const isUserEqual = (googleUser, firebaseUser) => {
     if (firebaseUser) {
@@ -88,7 +90,12 @@ export default ({navigation}) => {
         console.log(exits)
         console.log('it works!')
         if(exits){
-          navigation.navigate('home');
+          if (nextScreen != undefined){
+            navigation.replace(nextScreen, {cartData: cartData, userId: result.user.uid});  
+          }else{
+            navigation.navigate('home');
+          }
+          
         } else {
           console.log('do not exists - NEW')
           let tmpData = {
@@ -136,7 +143,14 @@ export default ({navigation}) => {
     if(email != '' && password != ''){
       firebase.auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => navigation.popToTop())
+      .then((user) => {
+        if (nextScreen != undefined){
+          navigation.replace(nextScreen, {cartData: cartData, userId:user.uid});  
+        }else{
+          navigation.popToTop()
+        }
+        
+      })
       .catch(error => console.log(error))
     } else {
       Toast.show({

@@ -86,6 +86,7 @@ function App() {
         component={AccountOrdersViewScreen} 
         options={theme.horizontalAnimation}
         />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

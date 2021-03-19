@@ -31,6 +31,7 @@ export default ({ navigation }) => {
   let [sizelVisibility, setSizeVisibility] = useState(false);
   let [selectedItem, setSelectedItem] = useState({});
   let userRoute;
+  let [firebaseUser, setFirebaseUser] = useState({});
 
   //Options - size
   const [tabSizeOptions, setTabSizeOptions] = useState([
@@ -56,6 +57,9 @@ export default ({ navigation }) => {
     { key: 9, name: "10", checked: false, onPress: () => {}, disable: false },
   ]);
 
+  const didBlurSubscription = navigation.addListener("didBlur", (payload) => {
+    console.debug("newDidBlur", payload);
+  });
 
   React.useLayoutEffect(() => {
     checkAuth();
@@ -75,14 +79,15 @@ export default ({ navigation }) => {
   }, [navigation]);
 
   const checkAuth = () => {
-    firebase.auth().onAuthStateChanged(user => {
-        if(user){
-          userRoute = 'account'
-        }else {
-          userRoute = 'signin'
-        }
-    })
-  }
+    firebase.auth().onAuthStateChanged((user) => {
+      setFirebaseUser(user); //cloning object
+      if (user) {
+        userRoute = "account";
+      } else {
+        userRoute = "signin";
+      }
+    });
+  };
 
   const checkItemExists = (data, id) => {
     return data.find((x) => x.item === id);
@@ -90,6 +95,7 @@ export default ({ navigation }) => {
 
   //Load Cart
   const loadCart = (payload) => {
+    console.log("onDidFocus");
     if (payload && payload.action.routeName === "Cart") {
       showCart();
     }
@@ -97,7 +103,7 @@ export default ({ navigation }) => {
 
   const showCart = (type) => {
     let cartProducts = [];
-  
+
     if (products.length > 0) {
       Storage.getAllDataForKey("cart").then((cartList) => {
         console.log("- products -");
@@ -177,8 +183,6 @@ export default ({ navigation }) => {
     //Storage.clearMapForKey('cart')
   }, [products]);
 
-  
-
   /** MODAL */
   const showSizeModal = (item) => {
     let newSizes = [];
@@ -214,7 +218,7 @@ export default ({ navigation }) => {
 
   const showQtyModal = (item) => {
     let newQuantities = [];
-    console.log(item)
+    console.log(item);
 
     tabQtyOptions.forEach((x) => {
       let qty = x;
@@ -298,13 +302,16 @@ export default ({ navigation }) => {
       console.log(selectedItem);
 
       let newQty = 0;
-      let currentCartData = await Storage.getAllDataForKey("cart")
-      let currentCartItem = currentCartData.filter(x => x.item == selectedItem.id && x.size == selectedSize)[0]
-      
-      if(currentCartItem != undefined){
-        newQty = Number(currentCartItem.quantity) + Number(selectedItem.quantity);
-      }else{
-        newQty = selectedItem.quantity 
+      let currentCartData = await Storage.getAllDataForKey("cart");
+      let currentCartItem = currentCartData.filter(
+        (x) => x.item == selectedItem.id && x.size == selectedSize
+      )[0];
+
+      if (currentCartItem != undefined) {
+        newQty =
+          Number(currentCartItem.quantity) + Number(selectedItem.quantity);
+      } else {
+        newQty = selectedItem.quantity;
       }
 
       //First, remove the current item from cart
@@ -338,6 +345,25 @@ export default ({ navigation }) => {
         setQtyVisibility(false);
         showCart();
       });
+    }
+  };
+
+  const goToCheckout = () => {
+    if (cartData.length > 0) {
+      if (firebaseUser != undefined) {
+        console.log("firebaseUser");
+        console.log(firebaseUser.uid);
+        
+        navigation.navigate("checkout", {
+          cartData: cartData,
+          userId: firebaseUser.uid,
+        });
+      } else {
+        navigation.navigate("signin", {
+          cartData: cartData,
+          nextScreen: "checkout",
+        });
+      }
     }
   };
 
@@ -398,7 +424,12 @@ export default ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <NavigationEvents onDidFocus={(payload) => loadCart(payload)} />
+      <NavigationEvents
+        onWillFocus={(payload) => console.log("onWillFocus")}
+        onWillBlur={(payload) => console.log("onWillFocus")}
+        onDidBlur={(payload) => console.log("onDidBlur")}
+        onDidFocus={(payload) => loadCart(payload)}
+      />
       <Text style={styles.totalItemsText}>{`${cartData.length} ITEMS`}</Text>
       <View style={styles.separator}/>
       <View style={styles.headerContainer}>
@@ -441,14 +472,17 @@ export default ({ navigation }) => {
       <FlatList
         vertical
         showsVerticalScrollIndicator={false}
-        style = {styles.list}
+        style={styles.list}
         data={cartData}
         renderItem={({ item }) => renderCard(item)}
         keyExtractor={(x) => `${x.key}`}
       />
 
-      <View style={{ marginTop: 10, height:60 }}>
-        <TouchableOpacity onPress={()=> navigation.navigate('checkout', {cartData: cartData})} style={[styles.button, styles.checkoutBuy]}>
+      <View style={{ marginTop: 10, height: 60 }}>
+        <TouchableOpacity
+          onPress={() => goToCheckout()}
+          style={[styles.button, styles.checkoutBuy]}
+        >
           <Text style={[styles.buttonText, { color: theme.COLORS.WHITE }]}>
             <Ionicons
               name={"arrow-forward"}
@@ -496,6 +530,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignContent: "center",
+    backgroundColor: theme.COLORS.WHITE,
   },
   separator:{
     marginLeft: 10,
@@ -632,9 +667,9 @@ const styles = StyleSheet.create({
   button: {
     height: 47,
     borderRadius: 3,
-    flexDirection: 'row',
-    alignItems:'center',
-    marginHorizontal:10,
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 10,
   },
   checkoutBuy: {
     borderWidth: 1,

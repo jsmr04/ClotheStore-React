@@ -8,7 +8,7 @@ import Block from "../../components/Block";
 import theme from "../theme";
 import Util from "../../helpers/Util"
 import Storage from "../../backend/LocalStorage";
-import { NavigationEvents } from "react-navigation";
+import { NavigationEvents, NavigationActions } from "react-navigation";
 
 //Screen Style
 const styles = StyleSheet.create({
