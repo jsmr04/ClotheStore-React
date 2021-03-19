@@ -8,7 +8,7 @@ const COLORS = {
     THEME: '#B23AFC',
     PRIMARY: '#631686',
     INFO: '#1232FF',
-    ERROR: '#FE2472',
+    ERROR: 'red',
     WARNING: '#ec6b33',
     SUCCESS: '#45DF31',
     TRANSPARENT: 'transparent',

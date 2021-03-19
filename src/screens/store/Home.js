@@ -1,5 +1,5 @@
 import React, {useState, useLayoutEffect, useEffect} from "react";
-import { ActivityIndicator, RefreshControl, View, StyleSheet, FlatList, Dimensions, StatusBar, TouchableOpacity } from "react-native";
+import { ActivityIndicator, RefreshControl, View, StyleSheet, FlatList, Dimensions, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import fetchData from "../../backend/FetchData";
 import FirebaseConfig from "../../backend/FirebaseConfig";
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 });
 
 //Screen
-export default ({count, dispatch, navigation}) => {
+export default ({navigation}) => {
   const firebase = FirebaseConfig();
   const productRef = firebase.database().ref('/product');
   const [arrayFavorites, setArrayFavorites] = useState([])
@@ -50,7 +50,7 @@ export default ({count, dispatch, navigation}) => {
   let [lastDoc, setLastDoc] = useState(null);
   let [isMoreLoading, setIsMoreLoading] = useState(false);
   let userRoute;
-
+  
   const onRefresh = () => {
     getProducts();
   };
@@ -165,7 +165,7 @@ export default ({count, dispatch, navigation}) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
       <NavigationEvents onDidFocus={(payload) => reloadData(payload)} />
       { loading ? 
         <ActivityIndicator style={styles.activity}  size='large' color = { theme.COLORS.PRIMARY } />  

@@ -26,6 +26,8 @@ const TAX_RATE = 0.13;
 export default ({ route, navigation }) => {
   let userId = route.params.userId;
   let cartData = route.params.cartData;
+  console.log("CartData")
+  console.log(cartData)
   let { item: userInfoItem } = GetSingleItem("userInfo/" + userId);
   let [userInfo, setUserInfo] = useState({});
   let [cardName, setCardName] = useState("");
@@ -177,7 +179,7 @@ export default ({ route, navigation }) => {
           //Replace screen
           //navigation.replace('home');
           //TODO: There is a bug here, CART is not being cleared
-          navigation.popToTop();
+          navigation.goBack();
         } catch (e) {
           console.error(e);
         }
@@ -431,7 +433,7 @@ export default ({ route, navigation }) => {
         showsVerticalScrollIndicator={false}
         data={cartData}
         renderItem={({ item }) => renderCard(item)}
-        keyExtractor={(x) => x.productId}
+        keyExtractor={(x) => x.id}
         // ListHeaderComponent={getHeader}
         ListFooterComponent={getFooter}
       />

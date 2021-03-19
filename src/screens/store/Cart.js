@@ -21,7 +21,7 @@ import firebase from "firebase";
 const SHIPPING_FEE = 9.99;
 const TAX_RATE = 0.13;
 
-export default ({ navigation }) => {
+export default ({ route, navigation }) => {
   let { loading, data: products } = fetchData("product/");
   let [cartData, setCartData] = useState([]);
   let [taxAmount, setTaxAmount] = useState(0);
@@ -61,6 +61,16 @@ export default ({ navigation }) => {
     console.debug("newDidBlur", payload);
   });
 
+  useEffect(() => {
+    console.log("useEffect Reload")
+    console.log("Inside")
+    const reload = navigation.addListener('focus', () => {
+      console.log("Focus")
+      showCart();
+    });
+    return reload;
+  }, [navigation]);
+
   React.useLayoutEffect(() => {
     checkAuth();
     navigation.setOptions({
@@ -95,7 +105,7 @@ export default ({ navigation }) => {
 
   //Load Cart
   const loadCart = (payload) => {
-    console.log("onDidFocus");
+    //console.log("onDidFocus");
     if (payload && payload.action.routeName === "Cart") {
       showCart();
     }
@@ -103,11 +113,12 @@ export default ({ navigation }) => {
 
   const showCart = (type) => {
     let cartProducts = [];
+    setCartData([])
 
     if (products.length > 0) {
       Storage.getAllDataForKey("cart").then((cartList) => {
-        console.log("- products -");
-        console.log(products);
+        //console.log("- products -");
+        //console.log(products);
 
         cartList.forEach((x) => {
           let product = products.filter((p) => p.id == x.item)[0];
@@ -123,13 +134,13 @@ export default ({ navigation }) => {
             sizes: product.size,
           });
         });
-        console.log("- cartProducts -");
-        console.log(cartProducts);
+        //console.log("- cartProducts -");
+        //console.log(cartProducts);
 
         setCartData(cartProducts);
 
-        console.log("-Cart-");
-        console.log(cartData);
+        //console.log("-Cart-");
+        //console.log(cartData);
       });
     }
   };
@@ -139,7 +150,7 @@ export default ({ navigation }) => {
       key: "cart",
       id: item.key,
     }).then(() => {
-      console.log(`Item ${item.id} removed from cart`);
+      //console.log(`Item ${item.id} removed from cart`);
       showCart();
     });
   };
@@ -170,11 +181,13 @@ export default ({ navigation }) => {
     } else {
       setTaxAmount(0);
       setTotalAmount(0);
+      setSubTotalAmount(0);
+      
     }
   };
 
   useEffect(() => {
-    console.log("calculateTotals()");
+    //console.log("calculateTotals()");
     calculateTotals();
   }, [cartData]);
 
@@ -206,8 +219,8 @@ export default ({ navigation }) => {
       newSizes.push(size);
     });
 
-    console.log("- newSizes -");
-    console.log(newSizes);
+    //console.log("- newSizes -");
+    //console.log(newSizes);
 
     setTabSizeOptions(newSizes);
     setSizeVisibility(true);
@@ -218,7 +231,7 @@ export default ({ navigation }) => {
 
   const showQtyModal = (item) => {
     let newQuantities = [];
-    console.log(item);
+    //console.log(item);
 
     tabQtyOptions.forEach((x) => {
       let qty = x;
@@ -256,7 +269,7 @@ export default ({ navigation }) => {
   const checkQtyOption = (key) => {
     let newTabOptions = [];
 
-    console.log("checkQtyOption " + key);
+    //console.log("checkQtyOption " + key);
 
     tabQtyOptions.forEach((x) => {
       if (x.key == key) {
@@ -284,8 +297,8 @@ export default ({ navigation }) => {
     //Quantities
     let newTabOptions2 = [];
     tabQtyOptions.forEach((x) => {
-      console.log("tabQtyOptions ");
-      console.log(x);
+      //console.log("tabQtyOptions ");
+      //console.log(x);
       //onPress function
       x.onPress = checkQtyOption;
       newTabOptions2.push(x);
@@ -297,9 +310,9 @@ export default ({ navigation }) => {
   const updateCart = async (type) => {
     if (type === "size") {
       let selectedSize = tabSizeOptions.filter((x) => x.checked)[0].name;
-      console.log("- NEW CART ITEM -");
-      console.log(selectedItem.id + "-" + selectedSize);
-      console.log(selectedItem);
+      //console.log("- NEW CART ITEM -");
+      //console.log(selectedItem.id + "-" + selectedSize);
+      //console.log(selectedItem);
 
       let newQty = 0;
       let currentCartData = await Storage.getAllDataForKey("cart");
@@ -325,7 +338,7 @@ export default ({ navigation }) => {
             quantity: newQty, //Default quantity
           },
         }).then(() => {
-          console.log("Item updated");
+          //console.log("Item updated");
           setSizeVisibility(false);
           showCart();
         });
@@ -341,7 +354,7 @@ export default ({ navigation }) => {
           quantity: selectedQty, //New quantity
         },
       }).then(() => {
-        console.log("Item updated");
+        //console.log("Item updated");
         setQtyVisibility(false);
         showCart();
       });
@@ -351,8 +364,8 @@ export default ({ navigation }) => {
   const goToCheckout = () => {
     if (cartData.length > 0) {
       if (firebaseUser != undefined) {
-        console.log("firebaseUser");
-        console.log(firebaseUser.uid);
+        //console.log("firebaseUser");
+        //console.log(firebaseUser.uid);
         
         navigation.navigate("checkout", {
           cartData: cartData,
@@ -424,11 +437,7 @@ export default ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <NavigationEvents
-        onWillFocus={(payload) => console.log("onWillFocus")}
-        onWillBlur={(payload) => console.log("onWillFocus")}
-        onDidBlur={(payload) => console.log("onDidBlur")}
-        onDidFocus={(payload) => loadCart(payload)}
+      <NavigationEvents onDidFocus={(payload) => loadCart(payload)}
       />
       <Text style={styles.totalItemsText}>{`${cartData.length} ITEMS`}</Text>
       <View style={styles.separator}/>
