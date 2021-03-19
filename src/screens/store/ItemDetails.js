@@ -146,9 +146,17 @@ export default ({ route, navigation }) => {
           Toast.show({
             text1: "Hello there! 👋",
             text2: "This item was added into the Cart!",
+            topOffset: 60,
           });
         });
       }
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: "Hello there! 👋",
+        text2: "Please select the size!",
+        topOffset: 60,
+      });
     }
   };
 
