@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 });
 
 //Screen
-export default ({navigation}) => {
+export default ({count, dispatch, navigation}) => {
   const firebase = FirebaseConfig();
   const productRef = firebase.database().ref('/product');
   const [arrayFavorites, setArrayFavorites] = useState([])
@@ -56,7 +56,7 @@ export default ({navigation}) => {
   };
 
   function loadFavorites() {
-    console.log('loadFavorites')
+    //console.log('loadFavorites')
     Storage.getIdsForKey('favorite')
     .then(favorites => {
       setArrayFavorites(favorites)
@@ -65,7 +65,7 @@ export default ({navigation}) => {
   }
   
   function checkfavorites(itemId){
-    console.log('checkfavorites')
+    //console.log('checkfavorites')
     var icon = "heart-outline"
     arrayFavorites.forEach(i =>{
       if(i == itemId){
@@ -89,11 +89,11 @@ export default ({navigation}) => {
           let newProducts = [];
           snapshot.forEach(function (childSnapshot) {
             newProducts.push(childSnapshot.val());
-            console.log(childSnapshot.key);
+            //console.log(childSnapshot.key);
             setLastDoc(parseInt(childSnapshot.child('id').val()) +1);
           })
           setProducts(newProducts);
-          console.log(lastDoc)
+          //console.log(lastDoc)
         } else {
           setLastDoc(null)
         }
