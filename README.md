@@ -6,6 +6,7 @@ ClotheStore is an online store built in React Native.
 *	Browse products by category
 *	Browse all products 
 *	Search for a specific product
+*	Favorites
 *	Add products to a shopping cart
 *	Checkout
 *	Check order status
