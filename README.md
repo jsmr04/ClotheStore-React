@@ -18,7 +18,7 @@ ClotheStore is an online store built in React Native.
 * **Cloud Database:** Firebase's Realtime Database
 * **Storage:** Firebase's Storage
 * **Authentication:** Firebase's Auth and Google Auth
-* **Navigation: ** Stack Navigation and Tabs Navigation
+* **Navigation:** Stack Navigation and Tabs Navigation
 
 ## Screenshots - Online Store
 
