@@ -1,6 +1,6 @@
 # ClotheStore-React Native
 
-ClotheStore is an online store built in React Native.
+ClotheStore is a cross-platform App built in React Native, this App allows you to buy clothes online.
 
 ## Features - Online Store
 *	Browse products by category
