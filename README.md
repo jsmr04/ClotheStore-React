@@ -22,8 +22,8 @@ ClotheStore is an online store built in React Native.
 
 ## Screenshots - Online Store
 
-**Index**
-![](/store-images/index.png)
+**Splash**
+![](/store-react-images/splash.png)
 
 **Filter by name or category**
 ![](/store-images/filter.png)
