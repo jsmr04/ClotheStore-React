@@ -23,58 +23,41 @@ ClotheStore is an online store built in React Native.
 ## Screenshots - Online Store
 
 **Splash**
+
 ![](/store-react-images/splash.png)
 
-**Filter by name or category**
-![](/store-images/filter.png)
+**Home**
+
+![](/store-react-images/detail.png)
 
 **Item detail**
-![](/store-images/item-detail.png)
 
-**Add to Cart**
-![](/store-images/add-to-cart.png)
+![](/store-react-images/item-detail.png)
 
-**Top Cart**
+**Favorites**
 
-![](/store-images/top-cart.png)
+![](/store-react-images/favorites1.png) ![](/store-react-images/favorites.png)
 
 **Cart**
-![](/store-images/cart.png)
+
+![](/store-react-images/cart.png) ![](/store-react-images/cart2.png)
 
 **Checkout**
-![](/store-images/checkout.png)
 
-**Order confirmation**
-![](/store-images/order-confirmation.png)
+![](/store-react-images/checkout.png) ![](/store-react-images/checkout2.png)
 
-**My orders**
-![](/store-images/my-orders.png)
+**Account**
 
-**Customer information**
-![](/store-images/user-info.png)
+![](/store-react-images/account.png) 
 
-**Sign in and Sign up**
-![](/store-images/signin.png)
-![](/store-images/signup.png)
+**Customer Information**
 
-## Screenshots - Administration
-**Index**
-![](/store-images/admin-dashboard.png)
+![](/store-react-images/user-info.png) 
 
-**Categories**
-![](/store-images/categories.png)
+**Shipping Address**
 
-**Products**
-![](/store-images/products.png)
-![](/store-images/new-product.png)
+![](/store-react-images/user-info.png) 
 
 **Orders**
-![](/store-images/orders.png)
-![](/store-images/detail.png)
 
-**Customers**
-![](/store-images/customers.png)
-
-**Reports**
-![](/store-images/sales-category.png)
-![](/store-images/sales-product.png)
+![](/store-react-images/orders.png) ![](/store-react-images/order-detail.png) 
