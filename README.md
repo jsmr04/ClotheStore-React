@@ -1,6 +1,6 @@
 # ClotheStore-React Native
 
-This is a college's project for Frontend Development course. In this project, I demonstrated al the things I learned through the course.
+This is a college's project for Frontend Development course. In this project, I demonstrated all the things I learned through the course.
 
 ClotheStore is an online store built in React Native.
 
