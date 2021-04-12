@@ -30,7 +30,7 @@ ClotheStore is a cross-platform App built in React Native, this App allows you t
 
 **Home**
 
-![](/store-react-images/detail.png)
+![](/store-react-images/home.png)
 
 **Item detail**
 
